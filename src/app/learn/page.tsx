@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   BookOpen,
@@ -19,8 +19,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { getStoredCurrentUser, UserProfile } from "@/lib/auth-storage";
 
 export default function LearnIndexPage() {
+  const [user, setUser] = useState<UserProfile | null>(null);
+
+  useEffect(() => {
+    setUser(getStoredCurrentUser());
+  }, []);
+
+  const isNewUser = !user || (user.questionsAttempted === 0);
+
   const tracks = [
     {
       slug: "quant",
@@ -30,9 +39,9 @@ export default function LearnIndexPage() {
       icon: Calculator,
       color: "text-indigo-400 bg-indigo-500/10 border-indigo-500/30",
       totalTopics: 18,
-      completedTopics: 11,
+      completedTopics: isNewUser ? 0 : 11,
       totalConcepts: 48,
-      completedConcepts: 32,
+      completedConcepts: isNewUser ? 0 : 32,
       weightage: "33% in CAT / 30% in XAT & SNAP",
       subTracks: [
         { name: "Arithmetic (TSD, Work, %, Profit & Loss)", count: "6 Topics" },
@@ -49,9 +58,9 @@ export default function LearnIndexPage() {
       icon: Layers,
       color: "text-blue-400 bg-blue-500/10 border-blue-500/30",
       totalTopics: 14,
-      completedTopics: 8,
+      completedTopics: isNewUser ? 0 : 8,
       totalConcepts: 36,
-      completedConcepts: 22,
+      completedConcepts: isNewUser ? 0 : 22,
       weightage: "30% in CAT / High weightage across all exams",
       subTracks: [
         { name: "Tabular DI & Mixed Caselets", count: "4 Topics" },
@@ -68,9 +77,9 @@ export default function LearnIndexPage() {
       icon: FileText,
       color: "text-emerald-400 bg-emerald-500/10 border-emerald-500/30",
       totalTopics: 12,
-      completedTopics: 9,
+      completedTopics: isNewUser ? 0 : 9,
       totalConcepts: 30,
-      completedConcepts: 24,
+      completedConcepts: isNewUser ? 0 : 24,
       weightage: "36% in CAT / 34% in XAT",
       subTracks: [
         { name: "RC Central Idea & Author Purpose", count: "4 Topics" },
@@ -87,9 +96,9 @@ export default function LearnIndexPage() {
       icon: Sparkles,
       color: "text-purple-400 bg-purple-500/10 border-purple-500/30",
       totalTopics: 10,
-      completedTopics: 4,
+      completedTopics: isNewUser ? 0 : 4,
       totalConcepts: 25,
-      completedConcepts: 10,
+      completedConcepts: isNewUser ? 0 : 10,
       weightage: "Exam-Specific Core Subjects",
       subTracks: [
         { name: "XAT Decision Making (Ethical & Business Cases)", count: "3 Topics" },
@@ -108,7 +117,7 @@ export default function LearnIndexPage() {
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-                Curriculum & Concept Pathways
+                Curriculum &amp; Concept Pathways
               </h1>
               <Badge variant="indigo">CANONICAL KNOWLEDGE GRAPH</Badge>
             </div>
@@ -118,10 +127,10 @@ export default function LearnIndexPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            <Link href="/practice/weak">
+            <Link href="/practice">
               <Button variant="secondary" size="sm" className="gap-2">
                 <Target className="h-4 w-4 text-amber-400" />
-                <span>Revise Weak Areas</span>
+                <span>{isNewUser ? "Start Initial Practice" : "Revise Weak Areas"}</span>
               </Button>
             </Link>
           </div>
@@ -130,14 +139,14 @@ export default function LearnIndexPage() {
         {/* Track Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {tracks.map((track) => {
-            const completionPct = Math.round(
-              (track.completedConcepts / track.totalConcepts) * 100
-            );
+            const completionPct = track.totalConcepts > 0
+              ? Math.round((track.completedConcepts / track.totalConcepts) * 100)
+              : 0;
 
             return (
               <Card
                 key={track.slug}
-                className="border border-slate-800 bg-[#0e1422] flex flex-col justify-between hover:border-slate-700 transition-all duration-200 group"
+                className="border border-slate-800 bg-[#0b1120] flex flex-col justify-between hover:border-slate-700 transition-all duration-200 group"
               >
                 <CardHeader className="space-y-3 pb-3">
                   <div className="flex items-start justify-between">
@@ -180,22 +189,20 @@ export default function LearnIndexPage() {
                     {track.subTracks.map((sub, idx) => (
                       <div
                         key={idx}
-                        className="p-2 rounded-xl bg-slate-900/60 border border-slate-800 text-[11px]"
+                        className="p-2 rounded-xl bg-slate-900/60 border border-slate-800/80 text-[11px] text-slate-300 flex items-center justify-between"
                       >
-                        <p className="text-slate-300 font-medium truncate">{sub.name}</p>
-                        <p className="text-[10px] text-slate-400 font-mono mt-0.5">{sub.count}</p>
+                        <span className="truncate">{sub.name}</span>
+                        <span className="text-[10px] text-slate-400 font-mono shrink-0 ml-1">{sub.count}</span>
                       </div>
                     ))}
                   </div>
 
-                  <div className="pt-2">
-                    <Link href={`/learn/${track.slug}`}>
-                      <Button variant="default" className="w-full justify-between group">
-                        <span>Explore {track.title} Topics</span>
-                        <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                      </Button>
-                    </Link>
-                  </div>
+                  <Link href={`/learn/${track.slug}`} className="block pt-2">
+                    <Button variant="default" size="sm" className="w-full justify-between group">
+                      <span>Explore {track.title}</span>
+                      <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             );

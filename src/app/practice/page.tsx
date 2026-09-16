@@ -17,18 +17,28 @@ import {
 } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { getStoredCurrentUser, UserProfile } from "@/lib/auth-storage";
 
 export default function PracticeHubPage() {
+  const [user, setUser] = React.useState<UserProfile | null>(null);
+
+  React.useEffect(() => {
+    setUser(getStoredCurrentUser());
+  }, []);
+
+  const isNewUser = !user || user.questionsAttempted === 0;
+  const streak = isNewUser ? 0 : (user?.currentStreak || 12);
+
   const modes = [
     {
       id: "weak",
-      title: "Targeted Weak Area Workout",
-      desc: "Instant 10-question drill dynamically generated from your <60% accuracy topics (Time & Work, Arrangements, Para Jumbles).",
+      title: isNewUser ? "Diagnostic Baseline Drill" : "Targeted Weak Area Workout",
+      desc: isNewUser
+        ? "Instant 10-question diagnostic drill across QA, DILR, and VARC to map your baseline accuracy."
+        : "Instant 10-question drill dynamically generated from your <60% accuracy topics (Time & Work, Arrangements, Para Jumbles).",
       icon: AlertTriangle,
       color: "text-amber-400 bg-amber-500/10 border-amber-500/30",
-      badge: "AI RECOMMENDED",
+      badge: isNewUser ? "DIAGNOSTIC" : "AI RECOMMENDED",
       badgeVariant: "warning" as const,
       href: "/practice/weak",
       stats: "10 Questions • ~18 Mins",
@@ -36,10 +46,12 @@ export default function PracticeHubPage() {
     {
       id: "daily",
       title: "Daily Streak Challenge",
-      desc: "5 curated questions across QA, DILR, and VARC to maintain your 12-day active streak and earn +150 bonus XP.",
+      desc: isNewUser
+        ? "5 curated questions across QA, DILR, and VARC to start your Day 1 active streak and earn +150 bonus XP."
+        : `5 curated questions across QA, DILR, and VARC to maintain your ${streak}-day active streak and earn +150 bonus XP.`,
       icon: Flame,
       color: "text-red-400 bg-red-500/10 border-red-500/30",
-      badge: "ACTIVE TODAY",
+      badge: isNewUser ? "START STREAK" : "ACTIVE TODAY",
       badgeVariant: "success" as const,
       href: "/practice/daily",
       stats: "5 Questions • ~8 Mins",

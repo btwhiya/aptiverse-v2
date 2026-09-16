@@ -132,15 +132,15 @@ export default function ProfilePage() {
           <div className="flex items-center gap-2.5 font-mono text-center">
             <div className="p-3 rounded-2xl bg-slate-900/80 border border-slate-800 min-w-[70px]">
               <p className="text-[10px] text-slate-400 font-sans uppercase">Level</p>
-              <p className="text-base sm:text-lg font-bold text-white">{user?.level || 4}</p>
+              <p className="text-base sm:text-lg font-bold text-white">{user?.level ?? 1}</p>
             </div>
             <div className="p-3 rounded-2xl bg-slate-900/80 border border-slate-800 min-w-[70px]">
               <p className="text-[10px] text-slate-400 font-sans uppercase">Streak</p>
-              <p className="text-base sm:text-lg font-bold text-amber-400">{user?.currentStreak || 12}d 🔥</p>
+              <p className="text-base sm:text-lg font-bold text-amber-400">{user?.currentStreak ?? 0}d 🔥</p>
             </div>
             <div className="p-3 rounded-2xl bg-slate-900/80 border border-slate-800 min-w-[70px]">
               <p className="text-[10px] text-slate-400 font-sans uppercase">Total XP</p>
-              <p className="text-base sm:text-lg font-bold text-indigo-400">{user?.totalXp || 2450}</p>
+              <p className="text-base sm:text-lg font-bold text-indigo-400">{user?.totalXp ?? 0}</p>
             </div>
           </div>
         </div>

@@ -36,13 +36,75 @@ interface TaskItem {
   href: string;
 }
 
+import { getStoredCurrentUser, UserProfile } from "@/lib/auth-storage";
+
 export default function StudyPlanPage() {
+  const [user, setUser] = useState<UserProfile | null>(null);
   const [targetExam, setTargetExam] = useState("CAT 2026");
   const [targetDate, setTargetDate] = useState("2026-11-29");
-  const [dailyQuestionGoal, setDailyQuestionGoal] = useState(25);
-  const [dailyStudyTimeMin, setDailyStudyTimeMin] = useState(120);
-  const [weeklyMockGoal, setWeeklyMockGoal] = useState(2);
+  const [dailyQuestionGoal, setDailyQuestionGoal] = useState(20);
+  const [dailyStudyTimeMin, setDailyStudyTimeMin] = useState(90);
+  const [weeklyMockGoal, setWeeklyMockGoal] = useState(1);
   const [isEditingGoal, setIsEditingGoal] = useState(false);
+
+  useEffect(() => {
+    const current = getStoredCurrentUser();
+    setUser(current);
+    if (current) {
+      setTargetExam(current.targetExamName || "CAT 2026");
+      setTargetDate(current.targetDate || "2026-11-29");
+      setDailyQuestionGoal(current.dailyQuestionGoal || 20);
+      setDailyStudyTimeMin(current.dailyStudyTimeMin || 90);
+      setWeeklyMockGoal(current.weeklyMockGoal || 1);
+
+      if (current.questionsAttempted === 0) {
+        setTasks([
+          {
+            id: "task-1",
+            title: `Complete ${current.targetExamName || "Exam"} Diagnostic Test (15 Questions)`,
+            topic: "Diagnostic Baseline",
+            section: "Core Sections",
+            type: "PRACTICE",
+            durationMin: 20,
+            completed: false,
+            href: "/practice",
+          },
+          {
+            id: "task-2",
+            title: "Explore Curriculum & Formula Guide",
+            topic: "Foundations",
+            section: "Quantitative Aptitude",
+            type: "THEORY",
+            durationMin: 15,
+            completed: false,
+            href: "/learn",
+          },
+          {
+            id: "task-3",
+            title: "Take First Daily Streak Challenge",
+            topic: "Daily Sprint",
+            section: "All Sections",
+            type: "PRACTICE",
+            durationMin: 10,
+            completed: false,
+            href: "/practice",
+          },
+          {
+            id: "task-4",
+            title: `Review ${current.targetExamName || "Exam"} Official Blueprint`,
+            topic: "Syllabus Breakdown",
+            section: "Exam Strategy",
+            type: "THEORY",
+            durationMin: 15,
+            completed: false,
+            href: `/exams/${current.targetExam || "cat"}`,
+          },
+        ]);
+      }
+    }
+  }, []);
+
+  const isNewUser = !user || user.questionsAttempted === 0;
 
   // Calculate days remaining
   const calculateDaysLeft = () => {
@@ -232,7 +294,7 @@ export default function StudyPlanPage() {
                     {dailyQuestionGoal} Qs • {dailyStudyTimeMin} Mins
                   </p>
                   <span className="text-[11px] text-slate-400 block">
-                    Current: 16/25 Qs Solved Today
+                    {isNewUser ? `Current: 0/${dailyQuestionGoal} Qs Solved Today` : "Current: 16/25 Qs Solved Today"}
                   </span>
                 </>
               )}
@@ -263,7 +325,7 @@ export default function StudyPlanPage() {
                     {weeklyMockGoal} Mocks / Week
                   </p>
                   <span className="text-[11px] text-slate-400 block">
-                    1 of 2 attempted this week
+                    {isNewUser ? `0 of ${weeklyMockGoal} attempted this week` : "1 of 2 attempted this week"}
                   </span>
                 </>
               )}
@@ -300,17 +362,17 @@ export default function StudyPlanPage() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
               <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800 text-center">
                 <span className="text-[10px] text-slate-400 block">Quant Mastery</span>
-                <span className="text-sm font-bold text-emerald-400">68% Complete</span>
+                <span className="text-sm font-bold text-emerald-400">{isNewUser ? "0% Complete" : "68% Complete"}</span>
                 <span className="text-[10px] text-slate-500 block">Arithmetic &amp; Algebra</span>
               </div>
               <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800 text-center">
                 <span className="text-[10px] text-slate-400 block">DILR Sets</span>
-                <span className="text-sm font-bold text-indigo-400">54% Complete</span>
+                <span className="text-sm font-bold text-indigo-400">{isNewUser ? "0% Complete" : "54% Complete"}</span>
                 <span className="text-[10px] text-slate-500 block">Focus: Games &amp; Tournaments</span>
               </div>
               <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800 text-center">
                 <span className="text-[10px] text-slate-400 block">VARC Accuracy</span>
-                <span className="text-sm font-bold text-amber-400">76% Accuracy</span>
+                <span className="text-sm font-bold text-amber-400">{isNewUser ? "0% Accuracy" : "76% Accuracy"}</span>
                 <span className="text-[10px] text-slate-500 block">Focus: Inference Passages</span>
               </div>
             </div>

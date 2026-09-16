@@ -138,12 +138,23 @@ const INITIAL_MISTAKES: MistakeItem[] = [
   },
 ];
 
+import { getStoredCurrentUser } from "@/lib/auth-storage";
+
 export default function MistakeBookPage() {
-  const [mistakes, setMistakes] = useState<MistakeItem[]>(INITIAL_MISTAKES);
+  const [mistakes, setMistakes] = useState<MistakeItem[]>([]);
   const [selectedExam, setSelectedExam] = useState("ALL");
   const [selectedSection, setSelectedSection] = useState("ALL");
   const [selectedDifficulty, setSelectedDifficulty] = useState("ALL");
   const [searchQuery, setSearchQuery] = useState("");
+
+  React.useEffect(() => {
+    const user = getStoredCurrentUser();
+    if (user && user.questionsAttempted > 0) {
+      setMistakes(INITIAL_MISTAKES);
+    } else {
+      setMistakes([]);
+    }
+  }, []);
 
   const [activeQuestionToSolve, setActiveQuestionToSolve] = useState<string | null>(null);
   const [retryAnswer, setRetryAnswer] = useState<string | null>(null);

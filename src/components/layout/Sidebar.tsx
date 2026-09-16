@@ -201,7 +201,7 @@ export function Sidebar({ userRole }: { userRole?: string }) {
   ];
 
   return (
-    <aside className="hidden lg:flex flex-col w-64 shrink-0 border-r border-slate-800/80 bg-[#0b0f19] h-screen sticky top-0 z-40 select-none">
+    <aside className="hidden lg:flex flex-col w-64 shrink-0 border-r border-slate-800/80 bg-[#060911]/95 backdrop-blur-xl h-screen sticky top-0 z-40 select-none">
       {/* Brand Header */}
       <div className="h-16 px-5 flex items-center justify-between border-b border-slate-800/80">
         <Link href="/dashboard" className="flex items-center gap-2.5 group">
@@ -228,11 +228,11 @@ export function Sidebar({ userRole }: { userRole?: string }) {
       <div className="px-4 pt-4 pb-2">
         <div className="p-2.5 rounded-xl border border-indigo-500/20 bg-indigo-950/20 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="h-7 w-7 rounded-lg bg-indigo-600/30 border border-indigo-500/40 flex items-center justify-center text-xs font-bold text-indigo-300">
-              CAT
+            <div className="h-7 w-7 rounded-lg bg-indigo-600/30 border border-indigo-500/40 flex items-center justify-center text-xs font-bold text-indigo-300 uppercase">
+              {(currentUser?.targetExam || "cat").toUpperCase().slice(0, 4)}
             </div>
             <div>
-              <p className="text-xs font-semibold text-white">CAT 2026</p>
+              <p className="text-xs font-semibold text-white">{currentUser?.targetExamName || "CAT 2026"}</p>
               <p className="text-[10px] text-emerald-400 font-medium flex items-center gap-1">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                 Official Pattern
@@ -389,7 +389,7 @@ export function Sidebar({ userRole }: { userRole?: string }) {
                 {currentUser?.name || "Student Aspirant"}
               </p>
               <p className="text-[10px] text-slate-400 truncate font-mono">
-                Level {currentUser?.level || 1} • {currentUser?.totalXp || 100} XP
+                Level {currentUser?.level || 1} • {currentUser?.questionsAttempted === 0 ? 0 : (currentUser?.totalXp || 100)} XP
               </p>
             </div>
           </Link>
@@ -410,9 +410,13 @@ export function Sidebar({ userRole }: { userRole?: string }) {
             type="button"
             onClick={() => {
               logoutCurrentUser();
-              router.push("/sign-in");
+              if (typeof window !== "undefined") {
+                window.location.href = "/sign-in";
+              } else {
+                router.push("/sign-in");
+              }
             }}
-            className="text-[11px] text-slate-400 hover:text-indigo-300 flex items-center gap-1 transition-colors cursor-pointer"
+            className="text-[11px] text-slate-400 hover:text-rose-400 flex items-center gap-1 transition-colors cursor-pointer font-medium"
             title="Sign out of current account"
           >
             <LogOut className="h-3 w-3" />

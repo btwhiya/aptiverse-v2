@@ -210,6 +210,8 @@ const TRACK_TOPICS_DATA: Record<
   },
 };
 
+import { getStoredCurrentUser, UserProfile } from "@/lib/auth-storage";
+
 export default function SectionDetailPage({
   params,
 }: {
@@ -217,6 +219,13 @@ export default function SectionDetailPage({
 }) {
   const resolvedParams = use(params);
   const track = TRACK_TOPICS_DATA[resolvedParams.sectionSlug];
+  const [user, setUser] = React.useState<UserProfile | null>(null);
+
+  React.useEffect(() => {
+    setUser(getStoredCurrentUser());
+  }, []);
+
+  const isNewUser = !user || user.questionsAttempted === 0;
 
   if (!track) {
     notFound();
@@ -249,9 +258,11 @@ export default function SectionDetailPage({
         {/* Topic List Cards */}
         <div className="space-y-4">
           {track.topics.map((topic) => {
-            const completionPct = Math.round(
-              (topic.completedCount / topic.conceptsCount) * 100
-            );
+            const completedCount = isNewUser ? 0 : topic.completedCount;
+            const accuracy = isNewUser ? 0 : topic.accuracy;
+            const completionPct = isNewUser
+              ? 0
+              : Math.round((completedCount / topic.conceptsCount) * 100);
 
             return (
               <Card
@@ -268,7 +279,11 @@ export default function SectionDetailPage({
                       <span className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-slate-900 text-slate-300 border border-slate-800">
                         {topic.subdomain}
                       </span>
-                      {topic.status === "WEAK" ? (
+                      {isNewUser ? (
+                        <Badge variant="outline" className="text-[10px] text-slate-400">
+                          READY (0%)
+                        </Badge>
+                      ) : topic.status === "WEAK" ? (
                         <Badge variant="destructive" className="text-[10px]">
                           WEAK AREA ({topic.accuracy}%)
                         </Badge>
@@ -301,7 +316,7 @@ export default function SectionDetailPage({
                       <div className="flex items-center justify-between text-xs">
                         <span className="text-slate-400">Progress</span>
                         <span className="font-mono font-bold text-white">
-                          {topic.completedCount} / {topic.conceptsCount} Concepts
+                          {completedCount} / {topic.conceptsCount} Concepts
                         </span>
                       </div>
                       <Progress value={completionPct} className="h-2" />

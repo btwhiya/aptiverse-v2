@@ -15,10 +15,11 @@ import {
   FileCheck2,
   Trophy,
   User,
+  LogOut,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { getStoredCurrentUser, UserProfile } from "@/lib/auth-storage";
+import { getStoredCurrentUser, logoutCurrentUser, UserProfile } from "@/lib/auth-storage";
 
 interface TopbarProps {
   onMobileMenuToggle?: () => void;
@@ -48,11 +49,12 @@ export function Topbar({ onMobileMenuToggle, isMobileMenuOpen }: TopbarProps) {
     };
   }, []);
 
-  const streak = currentUser?.currentStreak ?? 1;
-  const xp = currentUser?.totalXp ?? 100;
-  const questionsDone = currentUser?.questionsAttempted ? Math.min(currentUser.questionsAttempted, currentUser?.dailyQuestionGoal || 20) : 0;
+  const isNewUser = (currentUser?.questionsAttempted ?? 0) === 0;
+  const streak = isNewUser ? 0 : (currentUser?.currentStreak ?? 1);
+  const xp = isNewUser ? (currentUser?.totalXp ?? 0) : (currentUser?.totalXp ?? 100);
   const questionGoal = currentUser?.dailyQuestionGoal || 20;
-  const goalPercent = Math.round((questionsDone / questionGoal) * 100);
+  const questionsDone = isNewUser ? 0 : (currentUser?.questionsAttempted ? Math.min(currentUser.questionsAttempted, questionGoal) : 0);
+  const goalPercent = questionGoal > 0 ? Math.round((questionsDone / questionGoal) * 100) : 0;
   const targetExamSlug = currentUser?.targetExam || "cat";
   const targetExamName = currentUser?.targetExamName || "CAT 2026";
 
@@ -80,7 +82,7 @@ export function Topbar({ onMobileMenuToggle, isMobileMenuOpen }: TopbarProps) {
 
   return (
     <>
-      <header className="h-16 px-4 lg:px-8 border-b border-slate-800/80 bg-[#080c14]/90 backdrop-blur-md sticky top-0 z-30 flex items-center justify-between gap-4">
+      <header className="h-16 px-4 lg:px-8 border-b border-slate-800/80 bg-[#060911]/90 backdrop-blur-xl sticky top-0 z-30 flex items-center justify-between gap-4 shadow-sm shadow-black/20">
         {/* Left Side: Mobile Menu Button & Quick Search Trigger */}
         <div className="flex items-center gap-3 flex-1 max-w-md">
           <button
@@ -166,6 +168,22 @@ export function Topbar({ onMobileMenuToggle, isMobileMenuOpen }: TopbarProps) {
               {currentUser?.name?.split(" ")[0] || "Profile"}
             </span>
           </Link>
+
+          {/* Quick Sign Out Action */}
+          <button
+            type="button"
+            onClick={() => {
+              logoutCurrentUser();
+              if (typeof window !== "undefined") {
+                window.location.href = "/sign-in";
+              }
+            }}
+            className="p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+            title="Sign Out"
+            aria-label="Sign Out"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+          </button>
         </div>
       </header>
 

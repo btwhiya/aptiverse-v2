@@ -36,6 +36,7 @@ import { Progress } from "@/components/ui/progress";
 import { getExamSyllabus, SyllabusSection, SyllabusSubtopic } from "@/lib/syllabus-data";
 import { getCanonicalExamData, CanonicalExamChaptersData } from "@/lib/canonical-chapters";
 import { TopicPracticeModal } from "@/components/practice/TopicPracticeModal";
+import { getStoredCurrentUser, UserProfile } from "@/lib/auth-storage";
 
 export default function ExamDetailPage({
   params,
@@ -52,6 +53,11 @@ export default function ExamDetailPage({
   const [filterTaxonomy, setFilterTaxonomy] = useState<"ALL" | "OFFICIAL" | "RECOMMENDED">("ALL");
   const [filterStatus, setFilterStatus] = useState<string>("ALL");
   const [userProgressMap, setUserProgressMap] = useState<Record<string, any>>({});
+  const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
+
+  useEffect(() => {
+    setCurrentUser(getStoredCurrentUser());
+  }, []);
 
   const [practiceModalState, setPracticeModalState] = useState<{
     isOpen: boolean;
@@ -103,17 +109,27 @@ export default function ExamDetailPage({
   const currentCanonicalSection =
     canonicalData?.sections[activeSectionIndex] || canonicalData?.sections[0];
 
+  const isNewUser = !currentUser || currentUser.questionsAttempted === 0;
+
   // Calculate overall syllabus stats
   const allSubtopics: SyllabusSubtopic[] = exam.sections.flatMap((s) =>
     s.topics.flatMap((t) => t.subtopics)
   );
   const totalSubtopics = allSubtopics.length;
-  const masteredSubtopics = allSubtopics.filter((st) => st.status === "MASTERED").length;
-  const inProgressSubtopics = allSubtopics.filter((st) => st.status === "IN_PROGRESS").length;
-  const weakSubtopics = allSubtopics.filter((st) => st.status === "WEAK").length;
-  const completionPercentage = Math.round(
-    ((masteredSubtopics * 1 + inProgressSubtopics * 0.5) / (totalSubtopics || 1)) * 100
-  );
+  const masteredSubtopics = isNewUser
+    ? 0
+    : allSubtopics.filter((st) => st.status === "MASTERED").length;
+  const inProgressSubtopics = isNewUser
+    ? 0
+    : allSubtopics.filter((st) => st.status === "IN_PROGRESS").length;
+  const weakSubtopics = isNewUser
+    ? 0
+    : allSubtopics.filter((st) => st.status === "WEAK").length;
+  const completionPercentage = isNewUser
+    ? 0
+    : Math.round(
+        ((masteredSubtopics * 1 + inProgressSubtopics * 0.5) / (totalSubtopics || 1)) * 100
+      );
 
   // Canonical chapters count for this exam
   const allCanonicalChapters = canonicalData
@@ -646,22 +662,22 @@ export default function ExamDetailPage({
                               </span>
                               <Badge
                                 variant={
-                                  subtopic.status === "MASTERED"
+                                  !isNewUser && subtopic.status === "MASTERED"
                                     ? "verified"
-                                    : subtopic.status === "WEAK"
+                                    : !isNewUser && subtopic.status === "WEAK"
                                     ? "warning"
                                     : "indigo"
                                 }
                                 className="text-[10px]"
                               >
-                                {subtopic.status ? subtopic.status.replace("_", " ") : "READY"}
+                                {isNewUser ? "READY" : (subtopic.status ? subtopic.status.replace("_", " ") : "READY")}
                               </Badge>
                             </div>
                             <div className="flex items-center gap-3 text-xs text-slate-400">
-                              <span>Accuracy: {subtopic.accuracy || 75}%</span>
+                              <span>Accuracy: {isNewUser ? 0 : (subtopic.accuracy || 75)}%</span>
                               <span>•</span>
                               <span>
-                                Concepts: {subtopic.completedCount || 3}/{subtopic.conceptsCount || 4}
+                                Concepts: {isNewUser ? 0 : (subtopic.completedCount || 3)}/{subtopic.conceptsCount || 4}
                               </span>
                             </div>
                           </div>

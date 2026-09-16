@@ -74,12 +74,23 @@ const INITIAL_BOOKMARKS: BookmarkItem[] = [
   },
 ];
 
+import { getStoredCurrentUser } from "@/lib/auth-storage";
+
 export default function BookmarksPage() {
-  const [bookmarks, setBookmarks] = useState<BookmarkItem[]>(INITIAL_BOOKMARKS);
+  const [bookmarks, setBookmarks] = useState<BookmarkItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSection, setSelectedSection] = useState("ALL");
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
   const [tempNoteText, setTempNoteText] = useState("");
+
+  React.useEffect(() => {
+    const user = getStoredCurrentUser();
+    if (user && user.questionsAttempted > 0) {
+      setBookmarks(INITIAL_BOOKMARKS);
+    } else {
+      setBookmarks([]);
+    }
+  }, []);
 
   const handleDelete = (id: string) => {
     setBookmarks((prev) => prev.filter((b) => b.id !== id));

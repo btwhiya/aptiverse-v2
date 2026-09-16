@@ -120,8 +120,8 @@ function notifyAuthChange(user: UserProfile | null) {
   }
 }
 
-export function getStoredCurrentUser(): UserProfile {
-  if (typeof window === "undefined") return DEFAULT_DEMO_STUDENT;
+export function getStoredCurrentUser(): UserProfile | null {
+  if (typeof window === "undefined") return null;
   try {
     const raw = localStorage.getItem(STORAGE_KEY_CURRENT);
     if (raw) {
@@ -133,7 +133,11 @@ export function getStoredCurrentUser(): UserProfile {
   } catch (e) {
     console.warn("Failed to load user from localStorage", e);
   }
-  return DEFAULT_DEMO_STUDENT;
+  return null;
+}
+
+export function isAuthenticated(): boolean {
+  return getStoredCurrentUser() !== null;
 }
 
 export function setStoredCurrentUser(user: UserProfile): void {
@@ -201,10 +205,10 @@ export function registerNewUser(data: {
     questionsAttempted: 0,
     accuracy: 0,
     mocksCompleted: 0,
-    currentStreak: 1,
+    currentStreak: 0,
     studyTimeHours: 0,
     level: 1,
-    totalXp: 100,
+    totalXp: 0,
     strongTopics: [],
     weakTopics: [],
     lastTopic: {

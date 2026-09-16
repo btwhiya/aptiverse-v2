@@ -8,17 +8,40 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
+import { getStoredCurrentUser, UserProfile } from "@/lib/auth-storage";
+
 export default function LeaderboardPage() {
   const [boardType, setBoardType] = useState<"WEEKLY_XP" | "CAT_MOCK">("WEEKLY_XP");
+  const [user, setUser] = useState<UserProfile | null>(null);
+
+  React.useEffect(() => {
+    setUser(getStoredCurrentUser());
+  }, []);
+
+  const isNewUser = !user || user.questionsAttempted === 0;
+  const userName = user?.name ? `${user.name} (You)` : "You";
+  const userTarget = user?.targetExamName || "CAT 2026";
+  const userXp = isNewUser ? 0 : (user.totalXp ?? 2450);
+  const userStreak = isNewUser ? 0 : (user.currentStreak ?? 12);
+  const userMockScore = isNewUser ? 0 : 84;
 
   const leaderboardData = [
     { rank: 1, name: "Rohan Verma", target: "CAT 2026", xp: 4820, mockScore: 98, streak: 24, isUser: false },
     { rank: 2, name: "Sneha Mukherjee", target: "XAT 2026", xp: 4350, mockScore: 92, streak: 19, isUser: false },
     { rank: 3, name: "Aditya Nair", target: "CAT 2026", xp: 3980, mockScore: 88, streak: 16, isUser: false },
-    { rank: 4, name: "Aman Sharma (You)", target: "CAT 2026", xp: 2450, mockScore: 84, streak: 12, isUser: true },
-    { rank: 5, name: "Pooja Hegde", target: "SNAP 2026", xp: 2210, mockScore: 80, streak: 11, isUser: false },
-    { rank: 6, name: "Kunal Deshmukh", target: "NMAT 2026", xp: 1980, mockScore: 78, streak: 9, isUser: false },
-    { rank: 7, name: "Divya Kapoor", target: "CMAT 2026", xp: 1850, mockScore: 74, streak: 8, isUser: false },
+    ...(isNewUser
+      ? [
+          { rank: 4, name: "Pooja Hegde", target: "SNAP 2026", xp: 2210, mockScore: 80, streak: 11, isUser: false },
+          { rank: 5, name: "Kunal Deshmukh", target: "NMAT 2026", xp: 1980, mockScore: 78, streak: 9, isUser: false },
+          { rank: 6, name: "Divya Kapoor", target: "CMAT 2026", xp: 1850, mockScore: 74, streak: 8, isUser: false },
+          { rank: 248, name: userName, target: userTarget, xp: userXp, mockScore: userMockScore, streak: userStreak, isUser: true },
+        ]
+      : [
+          { rank: 4, name: userName, target: userTarget, xp: userXp, mockScore: userMockScore, streak: userStreak, isUser: true },
+          { rank: 5, name: "Pooja Hegde", target: "SNAP 2026", xp: 2210, mockScore: 80, streak: 11, isUser: false },
+          { rank: 6, name: "Kunal Deshmukh", target: "NMAT 2026", xp: 1980, mockScore: 78, streak: 9, isUser: false },
+          { rank: 7, name: "Divya Kapoor", target: "CMAT 2026", xp: 1850, mockScore: 74, streak: 8, isUser: false },
+        ]),
   ];
 
   return (

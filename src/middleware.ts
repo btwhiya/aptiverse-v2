@@ -22,6 +22,7 @@ const PROTECTED_PREFIXES = [
   "/achievements",
   "/onboarding",
   "/admin",
+  "/exams",
 ];
 
 // Auth routes where already-logged-in users can be redirected to /dashboard
@@ -46,6 +47,16 @@ export async function middleware(request: NextRequest) {
 
   const session = token ? await verifySessionToken(token) : null;
   const isAuthenticated = !!session;
+
+  // Handle root route '/': if authenticated -> /dashboard, if not authenticated -> /sign-in
+  if (pathname === "/") {
+    if (isAuthenticated) {
+      const defaultDest = session?.role === "ADMIN" ? "/admin" : "/dashboard";
+      return NextResponse.redirect(new URL(defaultDest, request.url));
+    } else {
+      return NextResponse.redirect(new URL("/sign-in", request.url));
+    }
+  }
 
   // Check if current path matches any protected prefix
   const isProtectedRoute = PROTECTED_PREFIXES.some(
