@@ -312,36 +312,63 @@ export default function QuizRunnerPage({
               {currentQ.questionText}
             </p>
 
-            {/* Answer Options Grid */}
-            <div className="space-y-3">
-              {currentQ.options.map((opt) => {
-                const isSelected = currentState.selectedOption === opt.label;
-                return (
-                  <div
-                    key={opt.label}
-                    onClick={() => handleSelectOption(opt.label)}
-                    className={`p-4 rounded-xl border text-sm flex items-start gap-3.5 transition-all cursor-pointer ${
-                      isSelected
-                        ? "bg-indigo-950/40 border-indigo-500 text-white shadow-xs"
-                        : "bg-slate-900/60 border-slate-800 text-slate-300 hover:bg-slate-900 hover:border-slate-700"
-                    }`}
-                  >
+            {/* Answer Options / TITA Input */}
+            {currentQ.options && currentQ.options.length > 0 ? (
+              <div className="space-y-3">
+                {currentQ.options.map((opt) => {
+                  const isSelected = currentState.selectedOption === opt.label;
+                  return (
                     <div
-                      className={`h-6 w-6 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 transition-colors ${
+                      key={opt.label}
+                      onClick={() => handleSelectOption(opt.label)}
+                      className={`p-4 rounded-xl border text-sm flex items-start gap-3.5 transition-all cursor-pointer ${
                         isSelected
-                          ? "bg-indigo-600 text-white"
-                          : "bg-slate-800 text-slate-400 border border-slate-700"
+                          ? "bg-indigo-950/40 border-indigo-500 text-white shadow-xs"
+                          : "bg-slate-900/60 border-slate-800 text-slate-300 hover:bg-slate-900 hover:border-slate-700"
                       }`}
                     >
-                      {opt.label}
+                      <div
+                        className={`h-6 w-6 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 transition-colors ${
+                          isSelected
+                            ? "bg-indigo-600 text-white"
+                            : "bg-slate-800 text-slate-400 border border-slate-700"
+                        }`}
+                      >
+                        {opt.label}
+                      </div>
+                      <span className="leading-relaxed text-xs sm:text-sm pt-0.5">
+                        {opt.text}
+                      </span>
                     </div>
-                    <span className="leading-relaxed text-xs sm:text-sm pt-0.5">
-                      {opt.text}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="p-5 rounded-xl bg-slate-900/80 border border-indigo-500/30 space-y-3">
+                <label className="text-xs font-semibold text-indigo-300 block uppercase tracking-wider">
+                  Type In The Answer (TITA) • No Negative Marking
+                </label>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="text"
+                    value={currentState.selectedOption || ""}
+                    onChange={(e) => handleSelectOption(e.target.value)}
+                    placeholder="Enter your numeric or text answer..."
+                    className="flex-1 px-4 py-3 bg-[#080c14] border border-slate-700 rounded-xl text-white font-mono text-sm focus:outline-hidden focus:border-indigo-500 transition-colors"
+                  />
+                  {currentState.selectedOption && (
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={handleClear}
+                      className="text-xs"
+                    >
+                      Clear
+                    </Button>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Test Navigation Toolbar */}

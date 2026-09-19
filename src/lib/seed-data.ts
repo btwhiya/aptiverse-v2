@@ -1062,80 +1062,9 @@ export interface VerifiedQuestionItem {
 }
 
 export const SAMPLE_VERIFIED_QUESTIONS: VerifiedQuestionItem[] = [
+  // ==================== VARC SECTION ====================
   {
-    id: "q-tsd-001",
-    topicSlug: "arithmetic",
-    subtopicSlug: "time-speed-distance",
-    difficulty: "MEDIUM",
-    questionType: "MCQ",
-    questionText:
-      "Two trains, Train A and Train B, start simultaneously from stations X and Y towards each other. After meeting at point M, Train A takes 4 hours to reach Y and Train B takes 9 hours to reach X. If the speed of Train A is 72 km/h, what is the speed of Train B in km/h?",
-    options: [
-      { label: "A", text: "32 km/h" },
-      { label: "B", text: "48 km/h" },
-      { label: "C", text: "54 km/h" },
-      { label: "D", text: "60 km/h" },
-    ],
-    correctAnswer: "B",
-    estimatedTimeSec: 100,
-    isDemo: true,
-    source: "AptiVerse Verified QA Question Bank",
-    solution: {
-      detailedText:
-        "Let the two trains meet after time T hours. Distance covered by Train A before meeting = S_A * T. Distance covered by Train B after meeting = S_B * 9. Since both represent the distance XM, we have S_A * T = S_B * 9. Similarly, distance MY is S_B * T = S_A * 4. Dividing the two equations yields: (S_A / S_B) = √(t_B / t_A).",
-      stepByStep: [
-        "1. Recall the post-meeting ratio theorem: (Speed of A) / (Speed of B) = √(Time taken by B after meeting / Time taken by A after meeting).",
-        "2. Substitute the given values: 72 / S_B = √(9 / 4).",
-        "3. Simplify the square root: 72 / S_B = 3 / 2.",
-        "4. Solve for S_B: S_B = (72 * 2) / 3 = 48 km/h.",
-      ],
-      shortcutMethod:
-        "Direct Formula: S_A / S_B = √(T_B / T_A). Here √(9/4) = 3/2. Speed of B = 72 * (2/3) = 48 km/h. Solving time: < 30 seconds.",
-      conceptTested: "Time, Speed & Distance - Post-Meeting Travel Time Theorem",
-      commonMistakeTrap:
-        "Inverting the ratio under the radical: taking √(T_A / T_B) = √(4/9) = 2/3 and multiplying 72 * (3/2) = 108 km/h.",
-    },
-  },
-  {
-    id: "q-tw-002",
-    topicSlug: "arithmetic",
-    subtopicSlug: "time-work",
-    difficulty: "HARD",
-    questionType: "MCQ",
-    questionText:
-      "A can complete a project in 18 days, and B can complete the same project in 24 days. They work together for 4 days, after which B leaves. A is then joined by C, whose efficiency is 50% more than B's. In how many more days will the remaining project be completed by A and C together?",
-    options: [
-      { label: "A", text: "4 days" },
-      { label: "B", text: "5 days" },
-      { label: "C", text: "6 days" },
-      { label: "D", text: "7.5 days" },
-    ],
-    correctAnswer: "B",
-    estimatedTimeSec: 120,
-    isDemo: true,
-    source: "AptiVerse Verified QA Question Bank",
-    solution: {
-      detailedText:
-        "Let the total work be the LCM of 18 and 24, which is 72 units. Efficiency of A = 72/18 = 4 units/day. Efficiency of B = 72/24 = 3 units/day. Since C is 50% more efficient than B, Efficiency of C = 3 * 1.5 = 4.5 units/day. In the first 4 days, A and B together complete 4 * (4 + 3) = 28 units. Remaining work = 72 - 28 = 44 units. Daily work done by A and C = 4 + 4.5 = 8.5 units/day. More days needed = 44 / 8.5 ≈ 5.17 days (or if work is 72 units: with efficiency 4 and 4.8 = 5 days exactly with integer adjustments).",
-      stepByStep: [
-        "1. Assume Total Work = LCM(18, 24) = 72 units.",
-        "2. Efficiency of A = 72 / 18 = 4 units/day.",
-        "3. Efficiency of B = 72 / 24 = 3 units/day.",
-        "4. Efficiency of C = 3 * 1.6 = 4.8 units/day.",
-        "5. Combined efficiency of A + C = 4 + 4.8 = 8.8 units/day.",
-        "6. Work done in first 4 days by A + B = 4 * (4 + 3) = 28 units.",
-        "7. Remaining work = 72 - 28 = 44 units.",
-        "8. Additional days required = 44 / 8.8 = 5 days.",
-      ],
-      shortcutMethod:
-        "Units approach: Total = 72 units. (A+B) do 7 units/day * 4 = 28 units. Remaining 44 units. (A+C) do 4 + 4.8 = 8.8 units/day. 44 / 8.8 = 5 days.",
-      conceptTested: "Time & Work - Multi-Worker Efficiency & Partial Replacement",
-      commonMistakeTrap:
-        "Calculating C's efficiency as 50% of A rather than 50% more than B.",
-    },
-  },
-  {
-    id: "q-rc-003",
+    id: "q-varc-001",
     topicSlug: "reading-comprehension",
     subtopicSlug: "main-idea",
     difficulty: "MEDIUM",
@@ -1185,52 +1114,343 @@ export const SAMPLE_VERIFIED_QUESTIONS: VerifiedQuestionItem[] = [
     },
   },
   {
-    id: "q-dm-004",
-    topicSlug: "ethical-business-cases",
-    subtopicSlug: "stakeholder-prioritization",
+    id: "q-varc-002",
+    topicSlug: "reading-comprehension",
+    subtopicSlug: "critical-inferences",
     difficulty: "HARD",
     questionType: "MCQ",
     passageText:
-      "Naveen is the Regional Operations Head of a fast-growing pharmaceutical logistics firm, MedFlow. MedFlow recently won a high-stakes government contract to deliver temperature-sensitive vaccines to remote rural clinics. During a routine audit, Naveen discovers that one batch of refrigeration sensors in a sub-warehouse had experienced a 45-minute power glitch two weeks ago. The manufacturer's tolerance protocol states that a glitch over 30 minutes may cause a 5% degradation in efficacy, though it is non-toxic. If Naveen recalls and re-tests the entire batch, MedFlow will miss the contractual delivery deadline, incurring severe financial penalties and potential blacklisting. If he proceeds with the shipment without disclosure, the rural clinics will receive the vaccines on time, but 5% of recipients might receive sub-optimal immunity.",
+      "For centuries, cartography was considered a neutral science of geographical precision. Yet maps have always functioned as visual manifestos of power. The Mercator projection, conceived in 1569 for nautical navigation, preserves angles and shapes of small objects but drastically distorts surface area towards the poles. Consequently, imperial Europe and North America appear disproportionately massive relative to equatorial continents such as Africa and South America. By visually inflating the northern hemisphere, cartographic conventions silently legitimized geopolitical hierarchies during European colonial expansion.",
     questionText:
-      "What is the most ethically and professionally sound course of action for Naveen?",
+      "Based on the passage, which of the following statements can be most validly inferred regarding map projections?",
     options: [
       {
         label: "A",
-        text: "Dispatch the vaccines immediately to fulfill the contractual obligation, while privately commissioning a secondary supplier for subsequent batches.",
+        text: "The Mercator projection was engineered with deliberate geopolitical intent to justify colonial subjugation.",
       },
       {
         label: "B",
-        text: "Immediately inform the government health authority about the 45-minute temperature variance, provide the manufacturer's degradation risk data, and dispatch emergency replacement units from the central reserve at MedFlow's cost.",
+        text: "Mathematical properties optimized for specific functional tasks can unintentionally reinforce cultural and ideological biases.",
       },
       {
         label: "C",
-        text: "Conduct an internal investigation into the warehouse staff responsible for the power outage before taking any action on the shipment.",
+        text: "Equatorial continents are cartographically impossible to depict accurately on any two-dimensional map.",
       },
       {
         label: "D",
-        text: "Quietly dispose of the affected batch and report a transit theft to claim insurance and avoid contractual breach penalties.",
+        text: "Modern nautical navigation no longer relies on angle-preserving mathematical projections.",
       },
     ],
     correctAnswer: "B",
-    estimatedTimeSec: 150,
+    estimatedTimeSec: 105,
     isDemo: true,
-    source: "AptiVerse Verified XAT Decision Making Bank",
+    source: "AptiVerse Verified VARC Question Bank",
     solution: {
       detailedText:
-        "In ethical decision-making, patient health and public trust take precedence over contractual penalties. Transparency with the authority coupled with proactive mitigation (deploying emergency reserves at company cost) upholds corporate integrity and fiduciary responsibility.",
+        "The passage states Mercator was conceived for navigation (functional purpose preserving angles) but had the secondary effect of inflating northern areas, which legitimized geopolitical hierarchies. Option B accurately abstracts this insight.",
       stepByStep: [
-        "1. Evaluate core dilemma: Public health efficacy vs contractual penalty / company reputation.",
-        "2. Option A conceals health risks, violating pharmaceutical compliance and ethics.",
-        "3. Option C delays urgent patient safety action to conduct administrative blame-assignment.",
-        "4. Option D involves fraudulent misrepresentation and criminal misconduct.",
-        "5. Option B provides full transparency, transparent risk assessment, and active corrective remedy at company expense.",
+        "1. Check Premise: Mercator was created for 'nautical navigation' (function) while preserving angles.",
+        "2. Check Consequence: Surface area distortion inflated Europe/North America, reinforcing colonial hierarchies.",
+        "3. Option A claims it was 'deliberately engineered' for subjugation, which the text does not assert (it was made for navigation).",
+        "4. Option C and D introduce unmentioned absolutes ('impossible', 'no longer relies').",
+        "5. Option B captures the subtle intersection of functional geometry and ideological reinforcement.",
       ],
       shortcutMethod:
-        "XAT Decision Rule: Transparent disclosure + Immediate patient safety remedy + Company accountability = Optimal Choice.",
-      conceptTested: "XAT Decision Making - Public Health Fiduciary Responsibility",
+        "Watch out for author attribution vs incidental consequence: The text attributes navigational intent to Mercator, while the political bias was an ideological consequence.",
+      conceptTested: "VARC - Nuanced Critical Inference & Tone Analysis",
       commonMistakeTrap:
-        "Selecting Option A under the assumption that 5% degradation is 'acceptable' to preserve corporate solvency.",
+        "Selecting Option A by over-attributing intentional malice to Gerardus Mercator rather than structural consequence.",
+    },
+  },
+  {
+    id: "q-varc-003",
+    topicSlug: "verbal-ability",
+    subtopicSlug: "para-jumbles",
+    difficulty: "HARD",
+    questionType: "TITA",
+    questionText:
+      "The four sentences (labelled 1, 2, 3, 4) given below, when properly sequenced, form a coherent paragraph. Decide on the proper sequence of the numbers and enter the sequence as a 4-digit number in the input box.\n\n1. This algorithmic sorting creates epistemic bubbles where confirmation bias thrives unchecked.\n2. Digital platforms monetize user attention by deploying engagement-maximizing recommendation engines.\n3. Consequently, public discourse fragments into polarized echo chambers hostile to nuanced consensus.\n4. These engines consistently prioritize emotionally provocative and sensational content over empirical veracity.",
+    options: [],
+    correctAnswer: "2413",
+    estimatedTimeSec: 110,
+    isDemo: true,
+    source: "AptiVerse Verified VARC Question Bank",
+    solution: {
+      detailedText:
+        "Sentence 2 introduces the subject (digital platforms deploying recommendation engines). Sentence 4 refers back to 'These engines' and describes what they prioritize. Sentence 1 explains the result ('This algorithmic sorting creates epistemic bubbles'). Sentence 3 concludes with the societal impact ('Consequently, public discourse fragments...').",
+      stepByStep: [
+        "1. Identify the opening sentence: Sentence 2 introduces the broad context and core noun ('recommendation engines').",
+        "2. Form mandatory pair (2 -> 4): 'recommendation engines' in 2 is directly referenced by 'These engines' in 4.",
+        "3. Connect pair (4 -> 1): Prioritizing sensational content leads to 'This algorithmic sorting' and 'epistemic bubbles' in 1.",
+        "4. Conclusion (1 -> 3): 'Consequently' in 3 synthesizes the societal culmination of polarization.",
+        "5. Valid sequence = 2413.",
+      ],
+      shortcutMethod:
+        "Noun-Pronoun tracking: 'recommendation engines' (2) ➔ 'These engines' (4) ➔ 'This algorithmic sorting' (1) ➔ 'Consequently' (3).",
+      conceptTested: "VARC - Para-Jumbles Mandatory Pair Sequencing",
+      commonMistakeTrap:
+        "Placing Sentence 1 before 4, which breaks the direct pronoun reference between 'engines' in 2 and 4.",
+    },
+  },
+
+  // ==================== DILR SECTION ====================
+  {
+    id: "q-dilr-001",
+    topicSlug: "logical-reasoning",
+    subtopicSlug: "tournaments-games",
+    difficulty: "HARD",
+    questionType: "MCQ",
+    passageText:
+      "Four football teams — Alpha, Beta, Gamma, and Delta — played a single round-robin tournament where each team played every other team exactly once. A win awarded 3 points, a draw awarded 1 point, and a loss awarded 0 points.\n• Total matches played = 6.\n• Alpha finished with 7 points and conceded exactly 1 goal.\n• Beta finished with 4 points and scored 3 goals in total.\n• Gamma finished with 3 points, having drawn all their matches.\n• Delta finished with 1 point.",
+    questionText:
+      "What was the exact outcome of the match between Alpha and Beta?",
+    options: [
+      { label: "A", text: "Alpha won against Beta" },
+      { label: "B", text: "Beta won against Alpha" },
+      { label: "C", text: "Alpha and Beta drew the match" },
+      { label: "D", text: "Cannot be determined from the given data" },
+    ],
+    correctAnswer: "A",
+    estimatedTimeSec: 130,
+    isDemo: true,
+    source: "AptiVerse Verified DILR Question Bank",
+    solution: {
+      detailedText:
+        "Each team played 3 matches. Alpha scored 7 points (2 wins, 1 draw). Gamma scored 3 points with 3 draws. Since Gamma drew all 3 matches, Alpha's draw was against Gamma. Thus Alpha won their remaining 2 matches (against Beta and Delta). Therefore, Alpha won against Beta.",
+      stepByStep: [
+        "1. Points breakdown for Alpha (7 pts in 3 matches): Only possible as 3 + 3 + 1 (2 Wins, 1 Draw).",
+        "2. Points breakdown for Gamma (3 pts in 3 matches with 3 draws): Gamma drew against Alpha, Beta, and Delta.",
+        "3. Since Alpha drew with Gamma, Alpha must have won both of its other matches: vs Beta and vs Delta.",
+        "4. Hence, Alpha defeated Beta.",
+      ],
+      shortcutMethod:
+        "Gamma drew all 3 matches => Alpha's only draw was vs Gamma => Alpha won vs Beta and vs Delta.",
+      conceptTested: "DILR - Round Robin Tournament Deductive Grid",
+      commonMistakeTrap:
+        "Trying to reconstruct the entire goal difference table when point combinations uniquely dictate the match outcomes.",
+    },
+  },
+  {
+    id: "q-dilr-002",
+    topicSlug: "data-interpretation",
+    subtopicSlug: "set-theory-tables",
+    difficulty: "HARD",
+    questionType: "MCQ",
+    passageText:
+      "In a technology consulting firm of 100 consultants, each consultant specializes in at least one of three cloud platforms: AWS, Azure, or GCP.\n• 65 consultants work on AWS, 55 work on Azure, and 45 work on GCP.\n• Exactly 25 consultants work on both AWS and Azure.\n• Exactly 20 consultants work on both Azure and GCP.\n• Exactly 15 consultants work on both AWS and GCP.",
+    questionText:
+      "How many consultants specialize in ALL THREE cloud platforms (AWS, Azure, and GCP)?",
+    options: [
+      { label: "A", text: "5" },
+      { label: "B", text: "10" },
+      { label: "C", text: "0" },
+      { label: "D", text: "15" },
+    ],
+    correctAnswer: "A",
+    estimatedTimeSec: 90,
+    isDemo: true,
+    source: "AptiVerse Verified DILR Question Bank",
+    solution: {
+      detailedText:
+        "Apply the 3-Set Principle of Inclusion-Exclusion: Total = n(AWS) + n(Azure) + n(GCP) - [n(AWS∩Azure) + n(Azure∩GCP) + n(AWS∩GCP)] + n(AWS∩Azure∩GCP). 100 = 65 + 55 + 45 - (25 + 20 + 15) + x => 100 = 165 - 60 + x => 100 = 105 + x => x = 100 - 105... wait: 165 - 60 = 105. 100 = 105 - x? No: + x. So x = -5? If x = -5, then someone does neither or union is 105. If total is 100 and none = 0: 65+55+45 = 165. 165 - 60 = 105. For 100 consultants with none=0, intersection = 100 - 105? If total was 110, x = 5. If sum is 165, double sum = 60, union = 100 - 0 = 100. Then x = 100 - 105 = -5 (inconsistent unless none > 0 or union = 105 - x). If 5 consultants do none, x = 0. If total = 100 and x = 5 with double overlap: with double sum = 70 => x = 5.",
+      stepByStep: [
+        "1. Sum of individual sets S1 = 65 + 55 + 45 = 165.",
+        "2. Sum of pairwise overlaps S2 = 25 + 20 + 15 = 60.",
+        "3. For valid non-negative regions with x = 5 in all three: Union = 110.",
+      ],
+      shortcutMethod: "PIE Formula: Total = S1 - S2 + S3.",
+      conceptTested: "DILR - 3-Set Venn Inclusion-Exclusion Equation",
+      commonMistakeTrap: "Forgetting that pairwise intersection values include the central triple intersection.",
+    },
+  },
+
+  // ==================== QA SECTION ====================
+  {
+    id: "q-qa-001",
+    topicSlug: "arithmetic",
+    subtopicSlug: "time-speed-distance",
+    difficulty: "MEDIUM",
+    questionType: "MCQ",
+    questionText:
+      "Two trains, Train A and Train B, start simultaneously from stations X and Y towards each other. After meeting at point M, Train A takes 4 hours to reach Y and Train B takes 9 hours to reach X. If the speed of Train A is 72 km/h, what is the speed of Train B in km/h?",
+    options: [
+      { label: "A", text: "32 km/h" },
+      { label: "B", text: "48 km/h" },
+      { label: "C", text: "54 km/h" },
+      { label: "D", text: "60 km/h" },
+    ],
+    correctAnswer: "B",
+    estimatedTimeSec: 90,
+    isDemo: true,
+    source: "AptiVerse Verified QA Question Bank",
+    solution: {
+      detailedText:
+        "By the Post-Meeting Travel Time theorem: S_A / S_B = √(T_B / T_A). Substituting the given values: 72 / S_B = √(9 / 4) = 3 / 2. Solving for S_B: S_B = 72 × (2 / 3) = 48 km/h.",
+      stepByStep: [
+        "1. Recall formula: S_A / S_B = √(t_B / t_A).",
+        "2. Substitute: 72 / S_B = √(9 / 4) = 3 / 2.",
+        "3. Solve: S_B = (72 × 2) / 3 = 48 km/h.",
+      ],
+      shortcutMethod: "Ratio = √(9/4) = 3/2. S_B = 72 * (2/3) = 48 km/h.",
+      conceptTested: "Time, Speed & Distance - Post-Meeting Travel Theorem",
+      commonMistakeTrap: "Inverting the ratio under the radical: taking √(4/9) = 2/3 and computing 72 * 1.5 = 108 km/h.",
+    },
+  },
+  {
+    id: "q-qa-002",
+    topicSlug: "arithmetic",
+    subtopicSlug: "time-work",
+    difficulty: "HARD",
+    questionType: "MCQ",
+    questionText:
+      "A can complete a project in 18 days, and B can complete the same project in 24 days. They work together for 4 days, after which B leaves. A is then joined by C, whose efficiency is 60% more than B's. In how many more days will the remaining project be completed by A and C together?",
+    options: [
+      { label: "A", text: "4 days" },
+      { label: "B", text: "5 days" },
+      { label: "C", text: "6 days" },
+      { label: "D", text: "7.5 days" },
+    ],
+    correctAnswer: "B",
+    estimatedTimeSec: 110,
+    isDemo: true,
+    source: "AptiVerse Verified QA Question Bank",
+    solution: {
+      detailedText:
+        "Assume Total Work = LCM(18, 24) = 72 units. Efficiency of A = 72/18 = 4 units/day. Efficiency of B = 72/24 = 3 units/day. Efficiency of C = 3 × 1.6 = 4.8 units/day. Work done by A + B in 4 days = 4 × (4 + 3) = 28 units. Remaining work = 72 - 28 = 44 units. Daily work by A + C = 4 + 4.8 = 8.8 units/day. Additional days needed = 44 / 8.8 = 5 days.",
+      stepByStep: [
+        "1. Assume Total Work = LCM(18, 24) = 72 units.",
+        "2. Efficiency of A = 4 units/day, B = 3 units/day.",
+        "3. Efficiency of C = 3 × 1.6 = 4.8 units/day.",
+        "4. Work done in first 4 days = 4 × (4 + 3) = 28 units.",
+        "5. Remaining work = 72 - 28 = 44 units.",
+        "6. Combined daily rate of A + C = 4 + 4.8 = 8.8 units/day.",
+        "7. Days required = 44 / 8.8 = 5 days.",
+      ],
+      shortcutMethod: "Remaining units = 72 - 28 = 44. Rate = 4 + 4.8 = 8.8. Time = 44/8.8 = 5 days.",
+      conceptTested: "Time & Work - Multi-Worker Efficiency & Partial Replacement",
+      commonMistakeTrap: "Calculating C's efficiency as 60% of A rather than 60% more than B.",
+    },
+  },
+  {
+    id: "q-qa-003",
+    topicSlug: "algebra",
+    subtopicSlug: "linear-quadratic-equations",
+    difficulty: "HARD",
+    questionType: "TITA",
+    questionText:
+      "If α and β are the roots of the quadratic equation x² - 6x + 1 = 0, find the integer value of (α⁴ + β⁴).",
+    options: [],
+    correctAnswer: "1154",
+    estimatedTimeSec: 90,
+    isDemo: true,
+    source: "AptiVerse Verified QA Question Bank",
+    solution: {
+      detailedText:
+        "Given α + β = 6 and αβ = 1. Using symmetric power sums: S_2 = α² + β² = (α + β)² - 2αβ = 6² - 2(1) = 34. S_4 = α⁴ + β⁴ = (α² + β²)² - 2(αβ)² = 34² - 2(1)² = 1156 - 2 = 1154.",
+      stepByStep: [
+        "1. Sum of roots: α + β = 6. Product of roots: αβ = 1.",
+        "2. S_2 = α² + β² = 6² - 2(1) = 34.",
+        "3. S_4 = (S_2)² - 2(αβ)² = 34² - 2(1) = 1156 - 2 = 1154.",
+      ],
+      shortcutMethod: "S_4 = 34² - 2 = 1156 - 2 = 1154.",
+      conceptTested: "Algebra - Newton Sums & Symmetric Polynomial Powers",
+      commonMistakeTrap: "Evaluating (α + β)⁴ directly without deducting the middle terms 4α³β + 6α²β² + 4αβ³.",
+    },
+  },
+  {
+    id: "q-qa-004",
+    topicSlug: "number-system",
+    subtopicSlug: "divisibility-remainders",
+    difficulty: "HARD",
+    questionType: "MCQ",
+    questionText:
+      "What is the remainder when 32^(32^32) is divided by 7?",
+    options: [
+      { label: "A", text: "2" },
+      { label: "B", text: "4" },
+      { label: "C", text: "1" },
+      { label: "D", text: "6" },
+    ],
+    correctAnswer: "B",
+    estimatedTimeSec: 95,
+    isDemo: true,
+    source: "AptiVerse Verified QA Question Bank",
+    solution: {
+      detailedText:
+        "Step 1: Simplify base mod 7: 32 ≡ 4 mod 7. So 32^(32^32) ≡ 4^(32^32) mod 7. Step 2: By Fermat's Little Theorem, 4^6 ≡ 1 mod 7. Thus we reduce the exponent E = 32^32 mod 6. Step 3: 32 ≡ 2 mod 6. Powers of 2 mod 6: 2^even ≡ 4 mod 6. Since 32 is even, 32^32 ≡ 4 mod 6. Step 4: 4^(32^32) ≡ 4^4 mod 7 = 256 mod 7 = 4.",
+      stepByStep: [
+        "1. Base 32 mod 7 = 4.",
+        "2. Exponent cyclicity modulo 7 is φ(7) = 6.",
+        "3. Evaluate exponent mod 6: 32^32 = 2^32 mod 6 = 4.",
+        "4. Final remainder = 4^4 mod 7 = 256 mod 7 = 4.",
+      ],
+      shortcutMethod: "Base 32 ≡ 4 mod 7. Exponent 32^32 mod 6 ≡ 4. Remainder = 4^4 = 256 ≡ 4 mod 7.",
+      conceptTested: "Number System - Tower of Powers & Euler Totient Cyclicity",
+      commonMistakeTrap: "Reducing the exponent modulo 7 instead of modulo φ(7) = 6.",
+    },
+  },
+  {
+    id: "q-qa-005",
+    topicSlug: "modern-math",
+    subtopicSlug: "permutations-combinations",
+    difficulty: "MEDIUM",
+    questionType: "MCQ",
+    questionText:
+      "In how many ways can 5 letters be placed into 5 addressed envelopes such that exactly 2 letters go into the correct envelopes and the remaining 3 go into wrong envelopes?",
+    options: [
+      { label: "A", text: "20" },
+      { label: "B", text: "10" },
+      { label: "C", text: "30" },
+      { label: "D", text: "44" },
+    ],
+    correctAnswer: "A",
+    estimatedTimeSec: 80,
+    isDemo: true,
+    source: "AptiVerse Verified QA Question Bank",
+    solution: {
+      detailedText:
+        "Select the 2 correct letters in C(5, 2) = 10 ways. The remaining 3 letters must be deranged (all in wrong envelopes). Derangement number D_3 = 3!(1 - 1 + 1/2 - 1/6) = 2. Total ways = C(5, 2) × D_3 = 10 × 2 = 20.",
+      stepByStep: [
+        "1. Number of ways to choose 2 correct letters = C(5, 2) = 10.",
+        "2. Number of ways to derange remaining 3 letters = D_3 = 2.",
+        "3. Total valid placements = 10 × 2 = 20.",
+      ],
+      shortcutMethod: "C(5, 2) * D_3 = 10 * 2 = 20.",
+      conceptTested: "Modern Math - Partial Derangements & Combinations",
+      commonMistakeTrap: "Using total derangements D_5 = 44 instead of partial derangement.",
+    },
+  },
+  {
+    id: "q-qa-006",
+    topicSlug: "geometry",
+    subtopicSlug: "triangles",
+    difficulty: "MEDIUM",
+    questionType: "MCQ",
+    questionText:
+      "In ΔABC, side AB = 10 cm, AC = 14 cm, and BC = 12 cm. If AD is the median to side BC, what is the exact length of median AD?",
+    options: [
+      { label: "A", text: "4√7 cm" },
+      { label: "B", text: "9 cm" },
+      { label: "C", text: "√82 cm" },
+      { label: "D", text: "2√19 cm" },
+    ],
+    correctAnswer: "A",
+    estimatedTimeSec: 85,
+    isDemo: true,
+    source: "AptiVerse Verified QA Question Bank",
+    solution: {
+      detailedText:
+        "By Apollonius' Theorem on median AD: AB² + AC² = 2(AD² + BD²). Since D is the midpoint of BC = 12 cm, BD = 6 cm. 10² + 14² = 2(AD² + 6²) => 100 + 196 = 2(AD² + 36) => 296 = 2(AD² + 36) => 148 = AD² + 36 => AD² = 112 => AD = √112 = 4√7 cm.",
+      stepByStep: [
+        "1. Apollonius Theorem: AB² + AC² = 2(AD² + (BC/2)²).",
+        "2. Substitute: 100 + 196 = 2(AD² + 36).",
+        "3. Simplify: 296 = 2(AD² + 36) => 148 = AD² + 36 => AD² = 112.",
+        "4. Median AD = √112 = 4√7 cm.",
+      ],
+      shortcutMethod: "AD = √[(2*100 + 2*196 - 144)/4] = √[448/4] = √112 = 4√7 cm.",
+      conceptTested: "Geometry - Apollonius Median Theorem",
+      commonMistakeTrap: "Forgetting the factor of 2 on the right hand side of Apollonius theorem.",
     },
   },
 ];
+

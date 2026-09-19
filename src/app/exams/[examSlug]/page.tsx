@@ -553,36 +553,36 @@ export default function ExamDetailPage({
 
                             {/* Action buttons */}
                             <div className="flex items-center gap-2 shrink-0">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() =>
-                                  setPracticeModalState({
-                                    isOpen: true,
-                                    topicName: topic.name,
-                                    topicSlug: topic.slug,
-                                    chapterName: chapter.name,
-                                    chapterSlug: chapter.slug,
-                                  })
-                                }
-                                className="text-xs h-8 gap-1.5 border-slate-800 hover:bg-slate-800"
-                              >
-                                <Zap className="h-3.5 w-3.5 text-indigo-400" />
-                                <span>Practice Drill</span>
-                              </Button>
+                              <Link href={`/learn/qa/${chapter.slug}`}>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="text-xs h-8 gap-1 text-slate-300 hover:text-white hover:bg-slate-800"
+                                >
+                                  <BookOpen className="h-3.5 w-3.5 text-indigo-400" />
+                                  <span>Learn</span>
+                                </Button>
+                              </Link>
 
-                              <Link
-                                href={`/quiz/${chapter.slug}?chapter=${chapter.slug}&exam=${exam.examSlug}&timed=true&test=true&title=${encodeURIComponent(
-                                  chapter.name + " Mastery Test"
-                                )}`}
-                              >
+                              <Link href={`/learn/qa/${chapter.slug}`}>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="text-xs h-8 gap-1.5 border-slate-800 hover:bg-slate-800 text-slate-200"
+                                >
+                                  <Zap className="h-3.5 w-3.5 text-emerald-400" />
+                                  <span>20 Practice Qs</span>
+                                </Button>
+                              </Link>
+
+                              <Link href={`/learn/qa/${chapter.slug}`}>
                                 <Button
                                   variant="accent"
                                   size="sm"
-                                  className="text-xs h-8 gap-1.5 shadow-sm shadow-indigo-600/20"
+                                  className="text-xs h-8 gap-1.5 shadow-sm shadow-indigo-600/20 bg-indigo-600 hover:bg-indigo-500"
                                 >
                                   <Target className="h-3.5 w-3.5" />
-                                  <span>Chapter Test</span>
+                                  <span>20 Test Qs</span>
                                 </Button>
                               </Link>
                             </div>
