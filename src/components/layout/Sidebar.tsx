@@ -27,6 +27,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { getStoredCurrentUser, logoutCurrentUser, UserProfile } from "@/lib/auth-storage";
+import { ExamSwitcherModal } from "./ExamSwitcherModal";
 
 interface NavItem {
   label: string;
@@ -41,6 +42,7 @@ export function Sidebar({ userRole }: { userRole?: string }) {
   const pathname = usePathname();
   const router = useRouter();
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
+  const [isSwitcherOpen, setIsSwitcherOpen] = useState(false);
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     learn: true,
     practice: true,
@@ -226,25 +228,35 @@ export function Sidebar({ userRole }: { userRole?: string }) {
 
       {/* Target Exam Switcher / Quick Status */}
       <div className="px-4 pt-4 pb-2">
-        <div className="p-2.5 rounded-xl border border-indigo-500/20 bg-indigo-950/20 flex items-center justify-between">
+        <div
+          onClick={() => setIsSwitcherOpen(true)}
+          className="p-2.5 rounded-xl border border-indigo-500/30 bg-indigo-950/30 hover:bg-indigo-950/50 hover:border-indigo-500/50 flex items-center justify-between cursor-pointer transition-all group"
+          title="Click to switch active exam"
+        >
           <div className="flex items-center gap-2">
-            <div className="h-7 w-7 rounded-lg bg-indigo-600/30 border border-indigo-500/40 flex items-center justify-center text-xs font-bold text-indigo-300 uppercase">
+            <div className="h-7 w-7 rounded-lg bg-indigo-600/30 border border-indigo-500/40 flex items-center justify-center text-xs font-bold text-indigo-300 uppercase group-hover:scale-105 transition-transform">
               {(currentUser?.targetExam || "cat").toUpperCase().slice(0, 4)}
             </div>
             <div>
-              <p className="text-xs font-semibold text-white">{currentUser?.targetExamName || "CAT 2026"}</p>
+              <p className="text-xs font-semibold text-white group-hover:text-indigo-300 transition-colors">
+                {currentUser?.targetExamName || "CAT 2026"}
+              </p>
               <p className="text-[10px] text-emerald-400 font-medium flex items-center gap-1">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                 Official Pattern
               </p>
             </div>
           </div>
-          <Link
-            href="/exams"
-            className="text-[11px] text-indigo-400 hover:text-indigo-300 font-medium underline underline-offset-2"
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsSwitcherOpen(true);
+            }}
+            className="text-[11px] text-indigo-400 hover:text-indigo-200 font-semibold underline underline-offset-2 px-1.5 py-0.5 rounded hover:bg-indigo-600/20 transition-colors"
           >
             Switch
-          </Link>
+          </button>
         </div>
       </div>
 
@@ -424,6 +436,12 @@ export function Sidebar({ userRole }: { userRole?: string }) {
           </button>
         </div>
       </div>
+      {/* Exam Switcher Modal */}
+      <ExamSwitcherModal
+        isOpen={isSwitcherOpen}
+        onClose={() => setIsSwitcherOpen(false)}
+        currentUser={currentUser}
+      />
     </aside>
   );
 }

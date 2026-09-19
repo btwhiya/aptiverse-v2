@@ -16,10 +16,12 @@ import {
   Trophy,
   User,
   LogOut,
+  ChevronDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { getStoredCurrentUser, logoutCurrentUser, UserProfile } from "@/lib/auth-storage";
+import { ExamSwitcherModal } from "./ExamSwitcherModal";
 
 interface TopbarProps {
   onMobileMenuToggle?: () => void;
@@ -28,6 +30,7 @@ interface TopbarProps {
 
 export function Topbar({ onMobileMenuToggle, isMobileMenuOpen }: TopbarProps) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isSwitcherOpen, setIsSwitcherOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
 
@@ -137,14 +140,17 @@ export function Topbar({ onMobileMenuToggle, isMobileMenuOpen }: TopbarProps) {
             <span className="text-xs font-bold font-mono">{xp.toLocaleString()} XP</span>
           </div>
 
-          {/* Target Exam Pill */}
-          <Link
-            href={`/exams/${targetExamSlug}`}
-            className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700/80 text-xs font-semibold text-slate-200 hover:border-indigo-500/50 hover:text-white transition-colors"
+          {/* Target Exam Pill / Quick Switcher */}
+          <button
+            type="button"
+            onClick={() => setIsSwitcherOpen(true)}
+            className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700/80 hover:border-indigo-500/60 hover:bg-slate-800/80 text-xs font-semibold text-slate-200 hover:text-white transition-all cursor-pointer group shadow-xs"
+            title="Click to switch active exam"
           >
-            <span className="h-2 w-2 rounded-full bg-indigo-500"></span>
+            <span className="h-2 w-2 rounded-full bg-indigo-500 group-hover:scale-125 transition-transform animate-pulse"></span>
             <span>{targetExamName}</span>
-          </Link>
+            <ChevronDown className="h-3.5 w-3.5 text-slate-400 group-hover:text-indigo-400 transition-colors ml-0.5" />
+          </button>
 
           {/* Notifications Trigger */}
           <button
@@ -280,6 +286,12 @@ export function Topbar({ onMobileMenuToggle, isMobileMenuOpen }: TopbarProps) {
           </div>
         </div>
       )}
+      {/* Exam Switcher Modal */}
+      <ExamSwitcherModal
+        isOpen={isSwitcherOpen}
+        onClose={() => setIsSwitcherOpen(false)}
+        currentUser={currentUser}
+      />
     </>
   );
 }

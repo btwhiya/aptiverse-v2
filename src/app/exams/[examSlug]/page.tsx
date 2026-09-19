@@ -36,7 +36,7 @@ import { Progress } from "@/components/ui/progress";
 import { getExamSyllabus, SyllabusSection, SyllabusSubtopic } from "@/lib/syllabus-data";
 import { getCanonicalExamData, CanonicalExamChaptersData } from "@/lib/canonical-chapters";
 import { TopicPracticeModal } from "@/components/practice/TopicPracticeModal";
-import { getStoredCurrentUser, UserProfile } from "@/lib/auth-storage";
+import { getStoredCurrentUser, switchTargetExam, UserProfile } from "@/lib/auth-storage";
 
 export default function ExamDetailPage({
   params,
@@ -54,10 +54,32 @@ export default function ExamDetailPage({
   const [filterStatus, setFilterStatus] = useState<string>("ALL");
   const [userProgressMap, setUserProgressMap] = useState<Record<string, any>>({});
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
+  const [switchFeedback, setSwitchFeedback] = useState<string | null>(null);
 
   useEffect(() => {
     setCurrentUser(getStoredCurrentUser());
+
+    const handleAuthChange = (e: Event) => {
+      const customEvent = e as CustomEvent<UserProfile | null>;
+      if (customEvent.detail) {
+        setCurrentUser(customEvent.detail);
+      } else {
+        setCurrentUser(getStoredCurrentUser());
+      }
+    };
+
+    window.addEventListener("aptiverse_auth_changed", handleAuthChange);
+    return () => {
+      window.removeEventListener("aptiverse_auth_changed", handleAuthChange);
+    };
   }, []);
+
+  const handleSetTargetExam = () => {
+    if (!exam) return;
+    switchTargetExam(exam.examSlug);
+    setSwitchFeedback(`Successfully set ${exam.shortName} as your active target exam!`);
+    setTimeout(() => setSwitchFeedback(null), 4000);
+  };
 
   const [practiceModalState, setPracticeModalState] = useState<{
     isOpen: boolean;
@@ -176,6 +198,23 @@ export default function ExamDetailPage({
             </div>
 
             <div className="flex flex-wrap sm:flex-col items-start sm:items-end gap-2">
+              {currentUser?.targetExam === exam.examSlug ? (
+                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-950/60 border border-emerald-500/40 text-xs font-bold text-emerald-300 shadow-sm">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                  <span>Your Primary Target Exam</span>
+                </div>
+              ) : (
+                <Button
+                  onClick={handleSetTargetExam}
+                  variant="accent"
+                  size="sm"
+                  className="gap-2 shadow-md shadow-indigo-600/25 bg-indigo-600 hover:bg-indigo-500"
+                >
+                  <Target className="h-4 w-4" />
+                  <span>Set as My Target Exam</span>
+                </Button>
+              )}
+
               <a
                 href={exam.officialWebsite}
                 target="_blank"
@@ -187,6 +226,14 @@ export default function ExamDetailPage({
               </a>
             </div>
           </div>
+
+          {/* Switch Feedback Toast */}
+          {switchFeedback && (
+            <div className="p-3 rounded-2xl bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-xs flex items-center gap-2 animate-in slide-in-from-top-2">
+              <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+              <span>{switchFeedback}</span>
+            </div>
+          )}
 
           {/* Quick Metrics Bar */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">

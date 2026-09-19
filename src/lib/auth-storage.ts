@@ -99,7 +99,7 @@ const DEFAULT_DEMO_ADMIN: UserProfile = {
 const STORAGE_KEY_CURRENT = "aptiverse_current_user_v2";
 const STORAGE_KEY_USERS = "aptiverse_registered_users_v2";
 
-const EXAM_DISPLAY_NAMES: Record<string, string> = {
+export const EXAM_DISPLAY_NAMES: Record<string, string> = {
   cat: "CAT 2026",
   xat: "XAT 2026",
   nmat: "NMAT 2026",
@@ -118,6 +118,21 @@ function notifyAuthChange(user: UserProfile | null) {
       // ignore
     }
   }
+}
+
+export function switchTargetExam(examSlug: string): UserProfile | null {
+  const currentUser = getStoredCurrentUser();
+  if (!currentUser) return null;
+
+  const targetExamName = EXAM_DISPLAY_NAMES[examSlug] || `${examSlug.toUpperCase()} 2026`;
+  const updatedUser: UserProfile = {
+    ...currentUser,
+    targetExam: examSlug,
+    targetExamName: targetExamName,
+  };
+
+  setStoredCurrentUser(updatedUser);
+  return updatedUser;
 }
 
 export function getStoredCurrentUser(): UserProfile | null {
