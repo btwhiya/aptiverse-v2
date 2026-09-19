@@ -1,36 +1,116 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎓 AptiVerse — Advanced Exam Preparation Platform
 
-## Getting Started
+[![Next.js](https://img.shields.io/badge/Next.js-16.3-black?logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.2-61DAFB?logo=react)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript)](https://www.typescriptlang.org/)
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-v4-38B2AC?logo=tailwindcss)](https://tailwindcss.com/)
+[![Prisma](https://img.shields.io/badge/Prisma-7.9-2D3748?logo=prisma)](https://www.prisma.io/)
 
-First, run the development server:
+**AptiVerse** is a full-stack, AI-powered aptitude and competitive exam preparation platform designed for high-stakes examinations including **CAT, XAT, GMAT, GRE, Bank PO, and Campus Placement Aptitude Tests**.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## 🚀 Key Modules & Capabilities
+
+### 1. 📊 Interactive DILR Engine & Concept Hub
+- **Canonical Concept Graph:** Structured syllabus covering Data Interpretation (Tables, Bar/Line/Pie charts, Mixed graphs, Missing Data Reconstruction, Caselets) and Logical Reasoning (Arrangements, Binary Logic, Tournaments, Network Routes, Venn Diagrams, Scheduling).
+- **Interactive CAT Set Runner:** Timed 2-column problem runner with dynamic dataset visualizations, clue checklist, TITA (Type In The Answer) input validation, and comprehensive step-by-step deductive explanations with CAT shortcut strategies.
+- **Dynamic Visualizations:** Bespoke SVG and canvas rendering for arrangements, tournament trees, network graphs, Venn diagrams, and Recharts-powered statistical charts.
+
+### 2. 🧮 Quantitative Aptitude & Question Engine
+- **Procedural Question Generation:** Multi-topic procedural math generators spanning Arithmetic, Algebra, Geometry, Modern Math, and Number Systems.
+- **Dynamic Option Randomization:** Cryptographically shuffled MCQ choices and dynamic distractor generation to prevent memorization and ensure true mastery.
+- **Concept & Formula Sheets:** Curated canonical notes with quick revision summaries, standard shortcuts, and typical question traps.
+
+### 3. 🎯 Multi-Exam Switcher & Adaptive Practice
+- Seamless switching between target exams (**CAT, XAT, GMAT, GRE, GATE, Banking, Placements**).
+- Adaptive question filtering based on target exam weightage and syllabus alignment.
+- Custom practice sessions, timed mock tests, previous year papers, and speed-drill modes.
+
+### 4. 📈 Performance Analytics & Mistake Notebook
+- **Mistake Notebook:** Automatic tracking of incorrect attempts with diagnostic categorization (conceptual error, calculation mistake, time pressure).
+- **Speed & Accuracy Analytics:** Detailed sectional velocity breakdown and percentile projections.
+- **Gamified Progress:** Streak trackers, milestones, and achievements to sustain preparation consistency.
+
+---
+
+## 🛠️ Technology Stack
+
+| Layer | Technologies |
+|---|---|
+| **Frontend** | Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4 |
+| **Animations & UI** | Framer Motion, Lucide Icons, Canvas Confetti |
+| **Data Visualizations** | Recharts, Custom SVG Venn/Network/Arrangement renderers |
+| **Forms & Validation** | React Hook Form, Zod |
+| **Database & ORM** | Prisma ORM, SQLite (`better-sqlite3`) |
+
+---
+
+## 📁 Repository Structure
+
+```
+AptiVerse/
+├── docs/                 # Architectural specifications, route maps, and syllabus taxonomy
+├── prisma/               # Prisma database schema and database seed scripts
+├── public/               # Static assets and icons
+├── src/
+│   ├── app/              # Next.js App Router pages & layouts
+│   │   ├── analytics/    # Speed, accuracy, and section performance breakdown
+│   │   ├── exams/        # Target exam hub and syllabus viewers
+│   │   ├── learn/        # Canonical concept graphs & DILR learning hub
+│   │   ├── mocks/        # Full-length exam simulation interface
+│   │   ├── practice/     # Topic-wise practice runners and question generation
+│   │   └── quiz/         # Rapid assessment & quiz results
+│   ├── components/       # Reusable UI widgets & specialized DILR visualizers
+│   │   ├── dilr/         # SVG/Chart components (Venn, Tournament, Network, Tables)
+│   │   ├── layout/       # AppShell, Topbar, Sidebar, ExamSwitcherModal
+│   │   └── ui/           # Buttons, Badges, Cards, Modals, Progress bars
+│   └── lib/              # Core business logic & mathematical generators
+│       ├── dilr/         # DILR generators, constraints solver, and registry
+│       ├── quant/        # Quant problem engines (Algebra, Arithmetic, Geometry, etc.)
+│       └── question-engine.ts # Question shuffler and procedural test engine
+└── package.json
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ⚡ Quick Start
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Prerequisites
+- [Node.js](https://nodejs.org/) (version 18.18 or higher)
+- `npm` or `pnpm`
 
-## Learn More
+### Installation & Setup
 
-To learn more about Next.js, take a look at the following resources:
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/btwhiya/aptiverse-v2.git
+   cd aptiverse-v2
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. **Initialize Database:**
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   ```
 
-## Deploy on Vercel
+4. **Launch Development Server:**
+   ```bash
+   npm run dev
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+5. Open your browser and navigate to:
+   ```
+   http://localhost:3000
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 📜 License
+
+This project is private and proprietary. Developed for advanced aptitude and competitive exam preparation.
