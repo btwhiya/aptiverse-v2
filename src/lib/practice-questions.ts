@@ -255,25 +255,49 @@ export function getQuestionsForPractice(params: {
   difficulty?: "ALL" | "EASY" | "MEDIUM" | "HARD";
   count?: number;
 }): PracticeQuestion[] {
-  let filtered = PRACTICE_QUESTIONS_DATABASE;
+  let filtered = [...PRACTICE_QUESTIONS_DATABASE];
 
   if (params.topicSlug && params.topicSlug !== "all") {
-    filtered = filtered.filter(
+    const matched = filtered.filter(
       (q) =>
         q.topicSlug.toLowerCase() === params.topicSlug?.toLowerCase() ||
         q.subtopicSlug?.toLowerCase() === params.topicSlug?.toLowerCase()
     );
+    if (matched.length > 0) {
+      filtered = matched;
+    }
   }
 
   if (params.difficulty && params.difficulty !== "ALL") {
-    filtered = filtered.filter((q) => q.difficulty === params.difficulty);
+    const diffMatched = filtered.filter((q) => q.difficulty === params.difficulty);
+    if (diffMatched.length > 0) {
+      filtered = diffMatched;
+    }
   }
 
-  // If filtered set is too small, fallback to general questions
-  if (filtered.length === 0) {
-    filtered = PRACTICE_QUESTIONS_DATABASE;
+  // Shuffle questions randomly using Fisher-Yates
+  for (let i = filtered.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [filtered[i], filtered[j]] = [filtered[j], filtered[i]];
   }
 
   const requestedCount = params.count || 5;
-  return filtered.slice(0, requestedCount);
+  const selected = filtered.slice(0, requestedCount);
+
+  // Shuffle options for each question
+  return selected.map((q) => {
+    if (q.type === "MCQ" && q.options && q.options.length > 0) {
+      const correctText = q.correctAnswer;
+      const shuffledOptions = [...q.options];
+      for (let i = shuffledOptions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledOptions[i], shuffledOptions[j]] = [shuffledOptions[j], shuffledOptions[i]];
+      }
+      return {
+        ...q,
+        options: shuffledOptions,
+      };
+    }
+    return q;
+  });
 }

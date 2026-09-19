@@ -53,7 +53,16 @@ export default function CustomQuizBuilderPage() {
   };
 
   const handleLaunch = () => {
-    router.push("/quiz/custom-drill-01");
+    const params = new URLSearchParams({
+      topic: selectedTopics[0] || selectedTrack,
+      topics: selectedTopics.join(","),
+      difficulty,
+      count: questionCount.toString(),
+      timed: timerMode === "TIMED" ? "true" : "false",
+      track: selectedTrack,
+      title: `Custom Drill (${selectedTopics.length} Topics • ${difficulty})`,
+    });
+    router.push(`/quiz/custom-${Date.now()}?${params.toString()}`);
   };
 
   return (

@@ -31,15 +31,27 @@ export default function QuizResultPage({
   params: Promise<{ quizId: string }>;
 }) {
   const resolvedParams = use(params);
-  const questions = SAMPLE_VERIFIED_QUESTIONS;
+  const [questions, setQuestions] = useState<VerifiedQuestionItem[]>(SAMPLE_VERIFIED_QUESTIONS);
 
   const [activeFilter, setActiveFilter] = useState<"ALL" | "CORRECT" | "INCORRECT" | "SKIPPED">("ALL");
   const [bookmarkedIds, setBookmarkedIds] = useState<string[]>([]);
   const [userAnswers, setUserAnswers] = useState<Record<number, { selectedOption: string | null; timeSpentSec: number }>>({});
 
   useEffect(() => {
-    // Load student attempt responses from sessionStorage
+    // Load student attempt responses and exact session questions from sessionStorage
     if (typeof window !== "undefined") {
+      const qRaw = sessionStorage.getItem(`quiz-questions-${resolvedParams.quizId}`);
+      if (qRaw) {
+        try {
+          const parsed = JSON.parse(qRaw);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setQuestions(parsed);
+          }
+        } catch (e) {
+          console.error("Failed to parse session questions", e);
+        }
+      }
+
       const raw = sessionStorage.getItem(`attempt-${resolvedParams.quizId}`);
       if (raw) {
         try {

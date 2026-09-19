@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, use } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
   Clock,
@@ -22,7 +22,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { SAMPLE_VERIFIED_QUESTIONS, type VerifiedQuestionItem } from "@/lib/seed-data";
+import { type VerifiedQuestionItem } from "@/lib/seed-data";
+import { getDynamicPracticeQuestions } from "@/lib/question-engine";
 import { formatTimeRemaining } from "@/lib/utils";
 import { QuizTimer, type QuizTimerTickData } from "@/components/quiz";
 
@@ -46,10 +47,48 @@ export default function QuizRunnerPage({
 }) {
   const resolvedParams = use(params);
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  // Load sample questions (stripped of solutions/answers on the client)
-  const questions = SAMPLE_VERIFIED_QUESTIONS;
+  // Load dynamically generated & randomized questions with shuffled options
+  const [questions, setQuestions] = useState<VerifiedQuestionItem[]>(() => {
+    if (typeof window !== "undefined") {
+      const cached = sessionStorage.getItem(`quiz-questions-${resolvedParams.quizId}`);
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        } catch {}
+      }
+    }
+    const topic = searchParams.get("topic") || searchParams.get("chapter") || resolvedParams.quizId;
+    const count = parseInt(searchParams.get("count") || "5", 10);
+    const difficulty = (searchParams.get("difficulty") || "ALL") as "ALL" | "EASY" | "MEDIUM" | "HARD";
+    const track = searchParams.get("track") || undefined;
+    const mode = searchParams.get("mode") || undefined;
+    const exam = searchParams.get("exam") || undefined;
+
+    const dynamicQs = getDynamicPracticeQuestions({
+      topic,
+      difficulty,
+      count,
+      track,
+      mode,
+      exam,
+    });
+
+    if (typeof window !== "undefined") {
+      try {
+        sessionStorage.setItem(`quiz-questions-${resolvedParams.quizId}`, JSON.stringify(dynamicQs));
+      } catch {}
+    }
+    return dynamicQs;
+  });
+
   const totalQuestions = questions.length;
+  const drillTitle =
+    searchParams.get("title") ||
+    searchParams.get("topic")?.replace(/-/g, " ") ||
+    resolvedParams.quizId.replace(/-/g, " ");
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
@@ -217,8 +256,8 @@ export default function QuizRunnerPage({
             QZ
           </div>
           <div>
-            <h1 className="text-sm font-bold text-white truncate max-w-[200px] sm:max-w-md">
-              AptiVerse Practice Drill #{resolvedParams.quizId}
+            <h1 className="text-sm font-bold text-white capitalize truncate max-w-[200px] sm:max-w-md">
+              Practice: {drillTitle}
             </h1>
             <p className="text-[10px] text-slate-400 font-mono">
               {totalQuestions} Questions • +3 / -1 Marking
