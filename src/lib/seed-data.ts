@@ -1050,14 +1050,14 @@ export interface VerifiedQuestionItem {
   options: { label: string; text: string }[];
   correctAnswer: string;
   estimatedTimeSec: number;
-  isDemo: boolean;
+  isDemo?: boolean;
   source: string;
   solution: {
     detailedText: string;
     stepByStep: string[];
     shortcutMethod: string;
     conceptTested: string;
-    commonMistakeTrap: string;
+    commonMistakeTrap?: string;
   };
   conceptTested?: string;
   imageUrl?: string;
