@@ -46,12 +46,24 @@ export default function MockAttemptSimulatorPage({
   const resolvedParams = use(params);
   const router = useRouter();
 
-  // Mock Sections Configuration (CAT-style strictly locked 40-minute sections)
-  const sections = [
-    { id: "varc", name: "VARC", durationSec: 2400, questionCount: 24 },
-    { id: "dilr", name: "DILR", durationSec: 2400, questionCount: 20 },
-    { id: "qa", name: "QA", durationSec: 2400, questionCount: 22 },
-  ];
+  const isXATMock = resolvedParams.mockId.toLowerCase().includes("xat");
+  const isXATDMSectional = resolvedParams.mockId.toLowerCase().includes("xat-dm");
+
+  // Mock Sections Configuration
+  const sections = isXATDMSectional
+    ? [{ id: "dm", name: "Decision Making", durationSec: 2400, questionCount: 22 }]
+    : isXATMock
+    ? [
+        { id: "valr", name: "VALR", durationSec: 3600, questionCount: 26 },
+        { id: "dm", name: "Decision Making", durationSec: 3000, questionCount: 22 },
+        { id: "qadi", name: "QA & DI", durationSec: 3600, questionCount: 28 },
+        { id: "gk", name: "General Knowledge", durationSec: 1800, questionCount: 25 },
+      ]
+    : [
+        { id: "varc", name: "VARC", durationSec: 2400, questionCount: 24 },
+        { id: "dilr", name: "DILR", durationSec: 2400, questionCount: 20 },
+        { id: "qa", name: "QA", durationSec: 2400, questionCount: 22 },
+      ];
 
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
   const [currentQIndex, setCurrentQIndex] = useState(0);
@@ -59,9 +71,20 @@ export default function MockAttemptSimulatorPage({
   const [calcInput, setCalcInput] = useState("0");
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
 
-  // Load questions by section
+  // Load questions by section with STRICT EXAM ISOLATION
   const allQuestions = getAllQuestionBank();
-  const varcQuestions = allQuestions.filter(
+
+  // For non-XAT (e.g. CAT), ensure DM and GK NEVER appear
+  const nonXATPool = allQuestions.filter(
+    (q) =>
+      !q.id.startsWith("xat-") &&
+      !q.topicSlug.includes("dm") &&
+      !q.topicSlug.includes("decision-making") &&
+      !q.topicSlug.includes("gk") &&
+      !q.topicSlug.includes("general-knowledge")
+  );
+
+  const varcQuestions = nonXATPool.filter(
     (q) =>
       q.topicSlug.includes("reading") ||
       q.topicSlug.includes("verbal") ||
@@ -70,7 +93,7 @@ export default function MockAttemptSimulatorPage({
       q.topicSlug.includes("odd-one") ||
       q.topicSlug.includes("sentence-completion")
   );
-  const dilrQuestions = allQuestions.filter(
+  const dilrQuestions = nonXATPool.filter(
     (q) =>
       q.topicSlug.includes("logical") ||
       q.topicSlug.includes("data") ||
@@ -80,7 +103,7 @@ export default function MockAttemptSimulatorPage({
       q.topicSlug.includes("tables-caselets") ||
       q.topicSlug.includes("binary-logic")
   );
-  const qaQuestions = allQuestions.filter(
+  const qaQuestions = nonXATPool.filter(
     (q) =>
       q.topicSlug.includes("arithmetic") ||
       q.topicSlug.includes("algebra") ||
@@ -92,13 +115,141 @@ export default function MockAttemptSimulatorPage({
       q.topicSlug.includes("percentages")
   );
 
-  const sectionPools = [
-    varcQuestions.length > 0 ? varcQuestions : allQuestions,
-    dilrQuestions.length > 0 ? dilrQuestions : allQuestions,
-    qaQuestions.length > 0 ? qaQuestions : allQuestions,
+  // XAT DM Question Pool
+  const xatDMQuestions = [
+    {
+      id: "xat-dm-m01",
+      topicSlug: "decision-making",
+      subtopicSlug: "ethical-dilemmas",
+      difficulty: "HARD" as const,
+      questionType: "MCQ" as const,
+      isDemo: false,
+      passageText: "A manufacturing company's wastewater discharge meets statutory limits. However, internal research reveals an unlisted synthetic chemical could accumulate in groundwater over 15 years. Remediation now reduces margins by 6%, jeopardizing an overseas expansion.",
+      questionText: "What is the most ethically and strategically sound recommendation for the Board of Directors?",
+      options: [
+        { label: "A", text: "Phase in advanced filtration retrofits over 18 months, transparently disclose groundwater research to environmental regulators, and recalibrate expansion financing." },
+        { label: "B", text: "Maintain current discharge levels since they fully comply with statutory municipal requirements, and review only if laws change." },
+        { label: "C", text: "Shut down all factory operations immediately and cancel the overseas expansion indefinitely." },
+        { label: "D", text: "Lobby municipal authorities to maintain current statutory emission thresholds." },
+        { label: "E", text: "Transfer the factory ownership to a shell company to shield against future liability." },
+      ],
+      correctAnswer: "A",
+      estimatedTimeSec: 120,
+      source: "XAT Decision Making Mock Bank",
+      solution: {
+        detailedText: "XAT Decision Making balances long-term ethical stewardship (preventing groundwater toxicity) with pragmatic managerial execution (phased 18-month retrofit rather than impulsive shutdown).",
+        stepByStep: ["Proactive ethical remediation protects brand value and prevents catastrophic liability."],
+        shortcutMethod: "Ethical stewardship + feasible phased execution.",
+        conceptTested: "XAT Decision Making - Environmental Ethics",
+        commonMistakeTrap: "Relying strictly on statutory minimums rather than moral duty.",
+      },
+    },
+    {
+      id: "xat-dm-m02",
+      topicSlug: "decision-making",
+      subtopicSlug: "resource-allocation",
+      difficulty: "HARD" as const,
+      questionType: "MCQ" as const,
+      isDemo: false,
+      passageText: "A supply chain aggregator faces 65% annual rider attrition and rising accident rates due to punitive delay deductions. A venture-backed rival is poaching drivers with a 20% wage guarantee. The CTO wants autonomous pods (₹75 Cr); Head of Ops wants rider welfare (₹45 Cr). Reserve capital is ₹80 Cr.",
+      questionText: "How should the CEO allocate capital to resolve the immediate crisis?",
+      options: [
+        { label: "A", text: "Commit ₹75 Cr to autonomous pods and announce phased human rider termination." },
+        { label: "B", text: "Allocate ₹45 Cr to human fleet stabilization, ₹15 Cr to a controlled autonomous pod pilot, and retain ₹20 Cr liquid reserves." },
+        { label: "C", text: "Distribute ₹80 Cr as an unconditional one-time cash bonus to riders without policy changes." },
+        { label: "D", text: "Acquire a competitor app to diversify away from e-commerce delivery." },
+        { label: "E", text: "File an anti-competitive lawsuit against the rival to halt their recruitment." },
+      ],
+      correctAnswer: "B",
+      estimatedTimeSec: 120,
+      source: "XAT Decision Making Mock Bank",
+      solution: {
+        detailedText: "Option B addresses immediate operational survival by stabilizing the human fleet while prudently exploring autonomy at a safe scale.",
+        stepByStep: ["Stabilize core engine first, fund exploratory technology in controlled pilot."],
+        shortcutMethod: "Core stabilization > Speculative moonshot.",
+        conceptTested: "XAT Decision Making - Capital Prioritization",
+        commonMistakeTrap: "Betting the enterprise on unproven robotics in chaotic traffic.",
+      },
+    },
   ];
 
-  const currentSectionQuestions = sectionPools[currentSectionIndex] || allQuestions;
+  // XAT GK Question Pool
+  const xatGKQuestions = [
+    {
+      id: "xat-gk-m01",
+      topicSlug: "general-knowledge",
+      subtopicSlug: "constitution-writs",
+      difficulty: "MEDIUM" as const,
+      questionType: "MCQ" as const,
+      isDemo: false,
+      questionText: "Under the Constitution of India, which writ is issued by the Supreme Court or High Courts to command a public authority to perform a mandatory statutory duty that they have refused to execute?",
+      options: [
+        { label: "A", text: "Habeas Corpus" },
+        { label: "B", text: "Mandamus" },
+        { label: "C", text: "Quo-Warranto" },
+        { label: "D", text: "Certiorari" },
+        { label: "E", text: "Prohibition" },
+      ],
+      correctAnswer: "B",
+      estimatedTimeSec: 40,
+      source: "XAT General Knowledge Bank",
+      solution: {
+        detailedText: "Mandamus ('We Command') directs a public official or authority to execute an act falling under their mandatory legal duty.",
+        stepByStep: ["Article 32 and Article 226 empower courts to issue writs."],
+        shortcutMethod: "Mandamus = Command to perform public duty.",
+        conceptTested: "Indian Constitution - Fundamental Rights & Writs",
+        commonMistakeTrap: "Confusing Mandamus with Quo-Warranto.",
+      },
+    },
+    {
+      id: "xat-gk-m02",
+      topicSlug: "general-knowledge",
+      subtopicSlug: "banking-fintech",
+      difficulty: "MEDIUM" as const,
+      questionType: "MCQ" as const,
+      isDemo: false,
+      questionText: "In early 2026, the Reserve Bank of India and NPCI International operationalized real-time cross-border linkage between India's UPI and which Southeast Asian instant payment network?",
+      options: [
+        { label: "A", text: "Philippines (InstaPay)" },
+        { label: "B", text: "Malaysia (DuitNow)" },
+        { label: "C", text: "Brunei (FastPay)" },
+        { label: "D", text: "Vietnam (Napas)" },
+        { label: "E", text: "Cambodia (Bakong)" },
+      ],
+      correctAnswer: "B",
+      estimatedTimeSec: 35,
+      source: "XAT Current Affairs Bank",
+      solution: {
+        detailedText: "India operationalized bilateral real-time remittances between UPI and Malaysia's DuitNow platform, following the Singapore PayNow linkage.",
+        stepByStep: ["Enables low-cost P2P cross-border transfers."],
+        shortcutMethod: "UPI-DuitNow linkage.",
+        conceptTested: "Current Affairs - International Banking & Digital Infrastructure",
+        commonMistakeTrap: "Guessing Vietnam or Cambodia instead of Malaysia.",
+      },
+    },
+  ];
+
+  // Configure sectionPools dynamically based on mock exam
+  let sectionPools: any[] = [];
+  if (isXATDMSectional) {
+    sectionPools = [xatDMQuestions];
+  } else if (isXATMock) {
+    sectionPools = [
+      varcQuestions.length > 0 ? varcQuestions : nonXATPool,
+      xatDMQuestions,
+      qaQuestions.length > 0 ? qaQuestions : nonXATPool,
+      xatGKQuestions,
+    ];
+  } else {
+    // Non-XAT (e.g. CAT Mock): STRICTLY NO DM, STRICTLY NO GK
+    sectionPools = [
+      varcQuestions.length > 0 ? varcQuestions : nonXATPool,
+      dilrQuestions.length > 0 ? dilrQuestions : nonXATPool,
+      qaQuestions.length > 0 ? qaQuestions : nonXATPool,
+    ];
+  }
+
+  const currentSectionQuestions = sectionPools[currentSectionIndex] || nonXATPool;
   const currentQ = currentSectionQuestions[currentQIndex % currentSectionQuestions.length];
 
   // Responses state
@@ -339,7 +490,7 @@ export default function MockAttemptSimulatorPage({
 
             {currentQ.options && currentQ.options.length > 0 ? (
               <div className="space-y-3">
-                {currentQ.options.map((opt) => {
+                {currentQ.options.map((opt: { label: string; text: string }) => {
                   const isSelected = currentState.selectedOption === opt.label;
                   return (
                     <div

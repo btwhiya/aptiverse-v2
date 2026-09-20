@@ -42,7 +42,6 @@ export default function CustomQuizBuilderPage() {
       { id: "sentence-completion", name: "Sentence Completion & Coherence" },
     ],
     special: [
-      { id: "xat-dm", name: "XAT Decision Making" },
       { id: "cmat-innovation", name: "CMAT Innovation & Entrepreneurship" },
       { id: "mat-economy", name: "MAT Economic & Business Env" },
       { id: "mah-cet-abstract", name: "MAH CET Abstract Reasoning" },

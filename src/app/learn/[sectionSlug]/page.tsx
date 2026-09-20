@@ -59,27 +59,12 @@ export default function LearnSectionPage({
 
   const specialDomains = [
     "ALL",
-    "XAT (Decision Making)",
     "CMAT (Innovation)",
     "MAT (Economic Env)",
     "MAH CET (Abstract Reasoning)",
   ];
 
   const SPECIAL_TOPICS = [
-    {
-      slug: "xat-decision-making",
-      name: "XAT Decision Making & Caselets",
-      domain: "XAT (Decision Making)",
-      examBadge: "XAT 2026",
-      badgeColor: "text-amber-400 border-amber-500/30 bg-amber-500/10",
-      catWeightage: "22 Qs (~28% of XAT)",
-      overview: "Ethical dilemmas, multi-stakeholder trade-offs, managerial decision frameworks, and real-world corporate caselets with XLRI-standard scoring criteria.",
-      theory: "Detailed",
-      practiceCount: 20,
-      testCount: 20,
-      practiceLink: "/practice/custom?track=special&topic=xat-dm",
-      examLink: "/exams/xat",
-    },
     {
       slug: "cmat-innovation",
       name: "CMAT Innovation & Entrepreneurship",

@@ -70,18 +70,34 @@ export function Topbar({ onMobileMenuToggle, isMobileMenuOpen }: TopbarProps) {
         .toUpperCase()
     : "ST";
 
-  const searchResults = [
-    { title: "Time, Speed & Distance - Relative Speed", type: "Concept", href: "/learn/quant/time-speed-distance" },
-    { title: "Percentages - Successive Change & Alligations", type: "Concept", href: "/learn/quant/percentages" },
-    { title: "CAT 2026 National Full Mock #01", type: "Mock Test", href: "/mocks/cat-2026-national-01" },
-    { title: "Linear Seating Arrangements Drill", type: "Practice", href: "/practice" },
-    { title: "XAT Decision Making Ethical Dilemmas", type: "Exam Special", href: "/learn/special/xat-dm" },
-  ].filter(
-    (item) =>
-      searchQuery &&
-      (item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.type.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
+  // Exam-Aware Search Filtering (Requirements 18, TEST 12, TEST 13)
+  // Inside CAT, NMAT, SNAP, CET: strictly NEVER return XAT DM or XAT GK
+  const isXATContext = targetExamSlug.toLowerCase() === "xat";
+
+  const masterSearchPool = [
+    { title: "Time, Speed & Distance - Relative Speed", type: "Concept", href: "/learn/quant/time-speed-distance", exam: "ALL" },
+    { title: "Percentages - Successive Change & Alligations", type: "Concept", href: "/learn/quant/percentages", exam: "ALL" },
+    { title: "CAT 2026 National Full Mock #01", type: "Mock Test", href: "/mocks/cat-2026-national-full-mock-01", exam: "cat" },
+    { title: "Linear Seating Arrangements Drill", type: "Practice", href: "/practice", exam: "ALL" },
+    { title: "XAT Decision Making Ethical Dilemmas", type: "XAT Studio", href: "/exams/xat/dm", exam: "xat" },
+    { title: "XAT General Knowledge (Static GK & Current Affairs)", type: "XAT Studio", href: "/exams/xat/gk", exam: "xat" },
+    { title: "XAT 2026 Comprehensive Simulator #01", type: "Mock Test", href: "/mocks/xat-2026-comprehensive-simulator-01", exam: "xat" },
+  ];
+
+  const searchResults = masterSearchPool
+    .filter((item) => {
+      // If user is inside non-XAT (e.g. CAT, NMAT, SNAP, CET), strictly exclude XAT DM and XAT GK
+      if (!isXATContext && item.exam === "xat") {
+        return false;
+      }
+      return true;
+    })
+    .filter(
+      (item) =>
+        searchQuery &&
+        (item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.type.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
 
   return (
     <>

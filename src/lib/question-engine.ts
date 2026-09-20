@@ -263,33 +263,32 @@ export const VARC_QUESTIONS_BANK: VerifiedQuestionItem[] = [
 export const SPECIAL_QUESTIONS_BANK: VerifiedQuestionItem[] = [
   {
     id: "special-001",
-    topicSlug: "xat-dm",
-    subtopicSlug: "decision-making",
-    difficulty: "HARD",
+    topicSlug: "mat-economy",
+    subtopicSlug: "macroeconomic-environment",
+    difficulty: "MEDIUM",
     questionType: "MCQ",
     isDemo: false,
-    passageText: "A manufacturing conglomerate's wastewater discharge meets current municipal legal safety limits. However, internal biochemical tests reveal an unlisted synthetic polymer that could accumulate in local groundwater over 15 years. Upgrading filtration now will reduce annual profit margins by 6%, jeopardizing an upcoming overseas expansion.",
-    questionText: "What is the most ethically and strategically prudent recommendation for the Board of Directors?",
+    passageText: "An emerging economy records a sharp increase in its foreign exchange reserves alongside an appreciating domestic currency. The central bank intervenes by purchasing US dollars in the foreign exchange spot market and simultaneously selling domestic government bonds in the open market.",
+    questionText: "What central banking policy maneuver is being executed through this twin intervention?",
     options: [
-      { label: "A", text: "Phase in advanced filtration retrofits over 18 months, transparently disclose groundwater research to environmental regulators, and recalibrate expansion financing." },
-      { label: "B", text: "Maintain current discharge levels since they fully comply with statutory municipal requirements, and review only if laws change." },
-      { label: "C", text: "Shut down all factory operations immediately and cancel the overseas expansion indefinitely." },
-      { label: "D", text: "Lobby municipal authorities to maintain current statutory emission thresholds." },
+      { label: "A", text: "Sterilized Foreign Exchange Intervention" },
+      { label: "B", text: "Unsterilized Quantitative Easing" },
+      { label: "C", text: "Direct Fiscal Monetization" },
+      { label: "D", text: "Expansionary Interest Rate Corridor Shift" },
     ],
     correctAnswer: "A",
-    estimatedTimeSec: 95,
-    source: "AptiVerse Verified XAT DM Bank",
+    estimatedTimeSec: 65,
+    source: "AptiVerse Verified MAT Bank",
     solution: {
-      detailedText: "XAT Decision Making balances long-term ethical stewardship (preventing groundwater toxicity) with pragmatic managerial phased execution (phased 18-month retrofit rather than impulsive shutdown). Regulatory transparency protects brand equity.",
+      detailedText: "When a central bank buys foreign currency to prevent excessive appreciation, it injects domestic liquidity. To prevent inflationary pressure, it neutralizes (sterilizes) this liquidity by selling government bonds via Open Market Operations (OMO). This is called Sterilized Intervention.",
       stepByStep: [
-        "1. Identify long-term liability: Environmental harm cannot be ignored simply because statutory thresholds lag science.",
-        "2. Reject extreme overreaction (Option C) which destroys the enterprise.",
-        "3. Reject unethical negligence (Option B & D) which creates catastrophic future liability.",
-        "4. Choose pragmatic, proactive phased remediation with stakeholder transparency (Option A).",
+        "1. Purchase of foreign exchange injects domestic currency into banking system.",
+        "2. Simultaneous sale of government securities absorbs equivalent liquidity.",
+        "3. The net monetary base remains unchanged while managing exchange rate volatility.",
       ],
-      shortcutMethod: "XAT decision rule: Prudent proactive risk mitigation > Legal minimalism > Knee-jerk shutdown.",
-      conceptTested: "XAT Decision Making - Environmental Stewardship vs Business Viability",
-      commonMistakeTrap: "Relying strictly on current minimum statutory limits rather than evaluating future liability.",
+      shortcutMethod: "Forex purchase + OMO bond sale = Sterilized Intervention.",
+      conceptTested: "MAT Economic & Business Environment - Central Bank Foreign Exchange Operations",
+      commonMistakeTrap: "Confusing sterilized intervention with unsterilized expansionary operations.",
     },
   },
   {
@@ -399,6 +398,39 @@ export function getDynamicPracticeQuestions(params: {
   const targetTopic = (params.chapter || params.subtopic || params.topic || "").toLowerCase();
   const targetTrack = (params.track || "").toLowerCase();
   const targetDifficulty = params.difficulty && params.difficulty !== "ALL" ? params.difficulty : null;
+  const requestedExam = (params.exam || "").toLowerCase();
+
+  // CRITICAL REQUIREMENT: EXAM-SPECIFIC DATA ISOLATION
+  // Decision Making (DM) and General Knowledge (GK) are strictly exclusive to XAT.
+  // When exam is NOT "xat", candidatePool MUST NEVER contain any DM or GK questions.
+  if (requestedExam !== "xat") {
+    // If user specifically requested DM or GK under a non-XAT exam, immediately return empty array
+    if (
+      targetTopic.includes("decision") ||
+      targetTopic.includes("dm") ||
+      targetTopic.includes("general-knowledge") ||
+      targetTopic.includes("gk") ||
+      targetTrack === "dm" ||
+      targetTrack === "gk"
+    ) {
+      return [];
+    }
+
+    candidatePool = candidatePool.filter((q) => {
+      const qTopic = q.topicSlug.toLowerCase();
+      const qSub = (q.subtopicSlug || "").toLowerCase();
+      const isXATExcl =
+        q.id.startsWith("xat-") ||
+        qTopic.includes("dm") ||
+        qTopic.includes("decision-making") ||
+        qTopic.includes("gk") ||
+        qTopic.includes("general-knowledge") ||
+        qSub.includes("decision-making") ||
+        qSub.includes("gk") ||
+        (q.source && (q.source.toLowerCase().includes("xat dm") || q.source.toLowerCase().includes("xat gk")));
+      return !isXATExcl;
+    });
+  }
 
   // Filter for unique / custom questions specifically if requested
   if (
@@ -461,8 +493,8 @@ export function getDynamicPracticeQuestions(params: {
       candidatePool = candidatePool.filter(
         (q) =>
           q.id.startsWith("special-") ||
-          q.topicSlug.includes("dm") ||
-          q.topicSlug.includes("innovation")
+          q.topicSlug.includes("innovation") ||
+          q.topicSlug.includes("economy")
       );
     }
   }
@@ -480,9 +512,9 @@ export function getDynamicPracticeQuestions(params: {
   const requestedCount = params.count ? Math.min(Math.max(params.count, 1), 30) : 5;
   const selectedQuestions = shuffledQuestions.slice(0, requestedCount);
 
-  // If candidate pool was smaller than requested count, fill with random questions from master pool
+  // If candidate pool was smaller than requested count, fill with random questions from filtered candidatePool
   if (selectedQuestions.length < requestedCount) {
-    const remaining = shuffleArray(allPool.filter((q) => !selectedQuestions.some((s) => s.id === q.id)));
+    const remaining = shuffleArray(candidatePool.filter((q) => !selectedQuestions.some((s) => s.id === q.id)));
     const needed = requestedCount - selectedQuestions.length;
     selectedQuestions.push(...remaining.slice(0, needed));
   }
