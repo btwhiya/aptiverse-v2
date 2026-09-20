@@ -23,6 +23,8 @@ import {
   Layers,
   LogOut,
   UserPlus,
+  BrainCircuit,
+  Compass,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -44,6 +46,7 @@ export function Sidebar({ userRole }: { userRole?: string }) {
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
   const [isSwitcherOpen, setIsSwitcherOpen] = useState(false);
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
+    exams: true,
     learn: true,
     practice: true,
     mocks: true,
@@ -229,9 +232,9 @@ export function Sidebar({ userRole }: { userRole?: string }) {
       {/* Target Exam Switcher / Quick Status */}
       <div className="px-4 pt-4 pb-2">
         <div
-          onClick={() => setIsSwitcherOpen(true)}
+          onClick={() => router.push(`/exams/${currentUser?.targetExam || "cat"}`)}
           className="p-2.5 rounded-xl border border-indigo-500/30 bg-indigo-950/30 hover:bg-indigo-950/50 hover:border-indigo-500/50 flex items-center justify-between cursor-pointer transition-all group"
-          title="Click to switch active exam"
+          title={`Click to open ${currentUser?.targetExamName || "CAT 2026"} Preparation Hub`}
         >
           <div className="flex items-center gap-2">
             <div className="h-7 w-7 rounded-lg bg-indigo-600/30 border border-indigo-500/40 flex items-center justify-center text-xs font-bold text-indigo-300 uppercase group-hover:scale-105 transition-transform">
@@ -262,6 +265,58 @@ export function Sidebar({ userRole }: { userRole?: string }) {
 
       {/* Navigation Scrollable Area */}
       <div className="flex-1 overflow-y-auto px-3 py-2 space-y-1">
+        {/* Dynamic XAT Exclusive Section Banner when XAT is active */}
+        {currentUser?.targetExam === "xat" && (
+          <div className="mx-1 my-2 p-2.5 rounded-2xl bg-gradient-to-br from-amber-500/15 via-amber-500/5 to-slate-900 border border-amber-500/30 space-y-1 shadow-sm">
+            <div className="flex items-center justify-between px-1">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-400">
+                XAT Preparation
+              </span>
+              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                ACTIVE
+              </span>
+            </div>
+            <div className="space-y-0.5">
+              <Link
+                href="/exams/xat"
+                className={cn(
+                  "flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-colors",
+                  pathname === "/exams/xat"
+                    ? "bg-amber-500 text-slate-950 font-bold"
+                    : "text-slate-300 hover:text-white hover:bg-slate-800/80"
+                )}
+              >
+                <Layers className="h-3.5 w-3.5 text-amber-400" />
+                <span>XAT Preparation Hub</span>
+              </Link>
+              <Link
+                href="/exams/xat/dm"
+                className={cn(
+                  "flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-colors",
+                  pathname.startsWith("/exams/xat/dm")
+                    ? "bg-amber-500 text-slate-950 font-bold"
+                    : "text-amber-300 hover:text-white hover:bg-amber-500/20"
+                )}
+              >
+                <BrainCircuit className="h-3.5 w-3.5 text-amber-400" />
+                <span>Decision Making (DM)</span>
+              </Link>
+              <Link
+                href="/exams/xat/gk"
+                className={cn(
+                  "flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-colors",
+                  pathname.startsWith("/exams/xat/gk")
+                    ? "bg-purple-600 text-white font-bold"
+                    : "text-purple-300 hover:text-white hover:bg-purple-500/20"
+                )}
+              >
+                <Compass className="h-3.5 w-3.5 text-purple-400" />
+                <span>General Knowledge (GK)</span>
+              </Link>
+            </div>
+          </div>
+        )}
+
         <div className="px-3 py-1.5 text-[11px] font-semibold tracking-wider uppercase text-slate-400">
           Preparation OS
         </div>

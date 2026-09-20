@@ -165,20 +165,55 @@ export default function LearnSectionPage({
                 : isDILR
                 ? "All 10 canonical DI and LR topics for CAT & MBA entrance exams. Each topic includes comprehensive conceptual frameworks, deduction techniques, 20 curated practice questions with speed shortcuts, and a 20-question timed chapter test."
                 : isSpecial
-                ? "Specialized, high-weightage sections unique to non-CAT management entrance exams: XAT Decision Making, CMAT Innovation & Entrepreneurship, MAT Economic Environment, and MAH CET Abstract Reasoning."
+                ? "Specialized, high-weightage sections unique to management entrance exams: CMAT Innovation & Entrepreneurship, MAT Economic Environment, and MAH CET Abstract Reasoning."
                 : "Master critical concepts, formula sheets, speed drills, and official exam pattern tests."}
             </p>
           </div>
 
           <div className="flex items-center gap-3">
-            <Link href={isSpecial ? "/exams" : "/exams/cat"}>
+            <Link href={isSpecial ? "/exams/xat" : "/exams/cat"}>
               <Button variant="outline" size="sm" className="gap-2">
                 <Target className="h-4 w-4 text-indigo-400" />
-                <span>{isSpecial ? "All Exam Blueprints" : "CAT Syllabus Blueprint"}</span>
+                <span>{isSpecial ? "XAT Preparation Hub" : "CAT Syllabus Blueprint"}</span>
               </Button>
             </Link>
           </div>
         </div>
+
+        {/* XAT Exclusive Section Notice on Specialist Page */}
+        {isSpecial && (
+          <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500/15 via-amber-500/5 to-slate-900/60 border border-amber-500/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-amber-500/20 text-amber-400 shrink-0">
+                <Sparkles className="h-5 w-5" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-sm font-bold text-white">Looking for XAT Decision Making (DM) or General Knowledge (GK)?</h3>
+                  <Badge variant="outline" className="text-[10px] border-amber-500/40 text-amber-300 bg-amber-500/10">
+                    XAT EXCLUSIVE
+                  </Badge>
+                </div>
+                <p className="text-xs text-slate-300 mt-0.5">
+                  In accordance with official exam architecture, <strong>Decision Making</strong> and <strong>General Knowledge</strong> are housed exclusively in the dedicated <strong>XAT Section</strong>.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <Link href="/exams/xat/dm">
+                <Button size="sm" className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs gap-1.5 shadow-md shadow-amber-500/20">
+                  <span>Open XAT DM Studio</span>
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Button>
+              </Link>
+              <Link href="/exams/xat">
+                <Button variant="outline" size="sm" className="border-amber-500/30 text-amber-300 hover:bg-amber-500/10 text-xs">
+                  <span>XAT Hub</span>
+                </Button>
+              </Link>
+            </div>
+          </div>
+        )}
 
         {/* Domain Filter Tabs */}
         {(isQuant || isDILR || isSpecial) && (
