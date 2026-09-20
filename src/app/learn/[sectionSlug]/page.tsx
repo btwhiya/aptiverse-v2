@@ -61,7 +61,7 @@ export default function LearnSectionPage({
     "ALL",
     "CMAT (Innovation)",
     "MAT (Economic Env)",
-    "MAH CET (Abstract Reasoning)",
+    "MICAT (Divergent Thinking)",
   ];
 
   const SPECIAL_TOPICS = [
@@ -94,18 +94,18 @@ export default function LearnSectionPage({
       examLink: "/exams/mat",
     },
     {
-      slug: "mah-cet-abstract",
-      name: "MAH MBA CET Abstract Reasoning",
-      domain: "MAH CET (Abstract Reasoning)",
-      examBadge: "MAH CET 2026",
-      badgeColor: "text-emerald-400 border-emerald-500/30 bg-emerald-500/10",
-      catWeightage: "25 Qs (~13% of CET)",
-      overview: "Visual pattern matrices, clockwise/anti-clockwise element rotations, geometric shape analogies, and mirror/water inversion transformation grids.",
+      slug: "micat-divergent",
+      name: "MICAT Divergent & Creative Thinking",
+      domain: "MICAT (Divergent Thinking)",
+      examBadge: "MICAT 2026",
+      badgeColor: "text-amber-400 border-amber-500/30 bg-amber-500/10",
+      catWeightage: "Psychometric & Divergent Section",
+      overview: "Creative problem-solving, lateral thinking puzzles, narrative synthesis, and perceptual associations.",
       theory: "Detailed",
       practiceCount: 20,
       testCount: 20,
-      practiceLink: "/practice/custom?track=special&topic=mah-cet-abstract",
-      examLink: "/exams/mah-cet",
+      practiceLink: "/practice/custom?track=special&topic=micat-divergent",
+      examLink: "/exams/micat",
     },
   ];
 

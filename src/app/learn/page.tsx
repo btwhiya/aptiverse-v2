@@ -93,7 +93,7 @@ export default function LearnIndexPage() {
       slug: "special",
       title: "Exam-Specific Specialist Modules",
       description:
-        "CMAT Innovation & Entrepreneurship, MAT Economic & Business Environment, and MAH CET Abstract Reasoning.",
+        "CMAT Innovation & Entrepreneurship, MAT Economic & Business Environment, and MICAT Divergent Thinking.",
       icon: Sparkles,
       color: "text-purple-400 bg-purple-500/10 border-purple-500/30",
       totalTopics: 7,
@@ -104,7 +104,7 @@ export default function LearnIndexPage() {
       subTracks: [
         { name: "CMAT Innovation & Entrepreneurship", count: "3 Topics" },
         { name: "MAT Economic & Business Environment", count: "2 Topics" },
-        { name: "MAH CET Abstract / Visual Reasoning", count: "2 Topics" },
+        { name: "MICAT Divergent Thinking", count: "2 Topics" },
       ],
     },
   ];

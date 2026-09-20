@@ -25,6 +25,8 @@ import {
   UserPlus,
   BrainCircuit,
   Compass,
+  Shapes,
+  Scale,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -312,6 +314,135 @@ export function Sidebar({ userRole }: { userRole?: string }) {
               >
                 <Compass className="h-3.5 w-3.5 text-purple-400" />
                 <span>General Knowledge (GK)</span>
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {/* Dynamic MAH CET Exclusive Section Banner when MAH CET is active */}
+        {(currentUser?.targetExam === "mah-cet" || pathname.startsWith("/exams/mah-cet")) && (
+          <div className="mx-1 my-2 p-2.5 rounded-2xl bg-gradient-to-br from-emerald-500/15 via-teal-500/5 to-slate-900 border border-emerald-500/30 space-y-1 shadow-sm">
+            <div className="flex items-center justify-between px-1">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-400">
+                MAH CET Preparation
+              </span>
+              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                ACTIVE
+              </span>
+            </div>
+            <div className="space-y-0.5">
+              <Link
+                href="/exams/mah-cet"
+                className={cn(
+                  "flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-colors",
+                  pathname === "/exams/mah-cet"
+                    ? "bg-emerald-500 text-slate-950 font-bold"
+                    : "text-slate-300 hover:text-white hover:bg-slate-800/80"
+                )}
+              >
+                <Layers className="h-3.5 w-3.5 text-emerald-400" />
+                <span>MAH CET Hub</span>
+              </Link>
+              <Link
+                href="/exams/mah-cet/ar"
+                className={cn(
+                  "flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-colors",
+                  pathname.startsWith("/exams/mah-cet/ar")
+                    ? "bg-emerald-500 text-slate-950 font-bold"
+                    : "text-emerald-300 hover:text-white hover:bg-emerald-500/20"
+                )}
+              >
+                <Shapes className="h-3.5 w-3.5 text-emerald-400" />
+                <span>Abstract Reasoning</span>
+              </Link>
+              <Link
+                href="/exams/mah-cet#section-logical-reasoning"
+                className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors"
+              >
+                <BrainCircuit className="h-3.5 w-3.5 text-blue-400" />
+                <span>Logical Reasoning (75Q)</span>
+              </Link>
+              <Link
+                href="/exams/mah-cet#section-quantitative-aptitude"
+                className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors"
+              >
+                <Target className="h-3.5 w-3.5 text-amber-400" />
+                <span>Quantitative Aptitude (50Q)</span>
+              </Link>
+              <Link
+                href="/exams/mah-cet#section-verbal-ability-rc"
+                className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors"
+              >
+                <BookOpen className="h-3.5 w-3.5 text-purple-400" />
+                <span>Verbal Ability & RC (50Q)</span>
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {/* Dynamic SNAP Exclusive Section Banner when SNAP is active */}
+        {(currentUser?.targetExam === "snap" || pathname.startsWith("/exams/snap")) && (
+          <div className="mx-1 my-2 p-2.5 rounded-2xl bg-gradient-to-br from-rose-500/15 via-indigo-500/5 to-slate-900 border border-rose-500/30 space-y-1 shadow-sm">
+            <div className="flex items-center justify-between px-1">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-rose-400">
+                SNAP Preparation
+              </span>
+              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                ACTIVE
+              </span>
+            </div>
+            <div className="space-y-0.5">
+              <Link
+                href="/exams/snap"
+                className={cn(
+                  "flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-colors",
+                  pathname === "/exams/snap"
+                    ? "bg-rose-500 text-slate-950 font-bold"
+                    : "text-slate-300 hover:text-white hover:bg-slate-800/80"
+                )}
+              >
+                <Layers className="h-3.5 w-3.5 text-rose-400" />
+                <span>SNAP Preparation Hub</span>
+              </Link>
+              <Link
+                href="/exams/snap/studio"
+                className={cn(
+                  "flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-colors",
+                  pathname === "/exams/snap/studio"
+                    ? "bg-rose-500 text-slate-950 font-bold"
+                    : "text-rose-300 hover:text-white hover:bg-rose-500/20"
+                )}
+              >
+                <Sparkles className="h-3.5 w-3.5 text-rose-400" />
+                <span>SNAP Concepts Studio</span>
+              </Link>
+              <Link
+                href="/exams/snap/studio?tab=verbal"
+                className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors"
+              >
+                <BookOpen className="h-3.5 w-3.5 text-indigo-400" />
+                <span>Verbal & RC (15Q)</span>
+              </Link>
+              <Link
+                href="/exams/snap/studio?tab=lr"
+                className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors"
+              >
+                <BrainCircuit className="h-3.5 w-3.5 text-amber-400" />
+                <span>Analytical & LR (25Q)</span>
+              </Link>
+              <Link
+                href="/exams/snap/studio?tab=quant"
+                className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors"
+              >
+                <Target className="h-3.5 w-3.5 text-emerald-400" />
+                <span>Quant, DI & DS (20Q)</span>
+              </Link>
+              <Link
+                href="/exams/snap/studio?tab=ethics"
+                className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-rose-300 hover:text-white hover:bg-rose-500/20 transition-colors"
+              >
+                <Scale className="h-3.5 w-3.5 text-rose-400" />
+                <span>Ethics & Values</span>
               </Link>
             </div>
           </div>

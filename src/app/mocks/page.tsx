@@ -108,6 +108,48 @@ export default function MockTestsCatalogPage() {
       desc: "45-minute specialist drill with multi-stakeholder business tradeoff caselets.",
       percentileTarget: "99.0 %ile Benchmark: ~14 Marks",
     },
+    {
+      id: "mah-cet-2026-full-length-mock-01",
+      title: "MAH MBA CET 2026 Full Length Mock #01",
+      exam: "mah-cet",
+      examName: "MAH MBA CET 2026",
+      isFullMock: true,
+      durationMin: 150,
+      questions: 200,
+      marks: 200,
+      status: "LIVE",
+      sections: "LR (75Q) • Abstract Reasoning (25Q) • QA (50Q) • VARC (50Q)",
+      desc: "Full 150-minute speed exam simulation with 200 questions, 25 visual Abstract Reasoning questions, and 0 negative marking.",
+      percentileTarget: "99.0 %ile Benchmark: ~140 Marks",
+    },
+    {
+      id: "mah-cet-ar-sectional-01",
+      title: "MAH CET Abstract Reasoning Sectional #01",
+      exam: "mah-cet",
+      examName: "MAH MBA CET 2026",
+      isFullMock: false,
+      durationMin: 20,
+      questions: 25,
+      marks: 25,
+      status: "LIVE",
+      sections: "Figure Series • Analogies • Matrices • Odd Figure Out",
+      desc: "20-minute visual reasoning sprint covering 25 questions with SVG figures and detailed transformation solutions.",
+      percentileTarget: "99.0 %ile Benchmark: ~22 Marks",
+    },
+    {
+      id: "snap-ethics-sectional-01",
+      title: "SNAP Ethics & Workplace Values Sectional #01",
+      exam: "snap",
+      examName: "SNAP 2026",
+      isFullMock: false,
+      durationMin: 15,
+      questions: 15,
+      marks: 15,
+      status: "LIVE",
+      sections: "Workplace Ethics • Governance • Conflict of Interest",
+      desc: "15-minute speed drill testing factual reasoning and stakeholder trade-offs under SNAP pacing.",
+      percentileTarget: "99.0 %ile Benchmark: ~13 Marks",
+    },
   ];
 
   const filteredMocks = mockTests.filter((mock) => {
@@ -144,8 +186,8 @@ export default function MockTestsCatalogPage() {
                 onClick={() => setFilterType(type)}
                 className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer ${
                   filterType === type
-                    ? "bg-indigo-600 text-white"
-                    : "bg-slate-900 text-slate-400 hover:text-white border border-slate-800"
+                    ? "bg-indigo-600 text-white shadow-xs"
+                    : "bg-slate-800/80 text-slate-400 hover:text-slate-200 hover:bg-slate-800"
                 }`}
               >
                 {type === "ALL" ? "All Mock Tests" : type === "FULL" ? "Full-Length Mocks" : "Sectional Tests"}
@@ -158,6 +200,7 @@ export default function MockTestsCatalogPage() {
               { id: "all", label: "All Exams" },
               { id: "cat", label: "CAT 2026" },
               { id: "xat", label: "XAT 2026" },
+              { id: "mah-cet", label: "MAH CET 2026" },
               { id: "snap", label: "SNAP 2026" },
             ].map((e) => (
               <button

@@ -15,6 +15,7 @@ import {
   Menu,
   X,
   AlertCircle,
+  ArrowRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -24,6 +25,15 @@ import { getAllQuestionBank } from "@/lib/question-engine";
 import { formatTimeRemaining } from "@/lib/utils";
 import { QuizTimer, type QuizTimerTickData } from "@/components/quiz";
 import { QuestionGraphViewer } from "@/components/practice/QuestionGraphViewer";
+import {
+  ALL_MAH_CET_AR_QUESTIONS,
+  FigureRenderer,
+  FigureSequence,
+  FigureAnalogy,
+  FigureMatrix,
+  OptionFigure,
+} from "@/lib/mah-cet";
+import { SNAP_QUESTION_BANK } from "@/lib/snap";
 
 type PaletteStatus =
   | "NOT_VISITED"
@@ -48,9 +58,30 @@ export default function MockAttemptSimulatorPage({
 
   const isXATMock = resolvedParams.mockId.toLowerCase().includes("xat");
   const isXATDMSectional = resolvedParams.mockId.toLowerCase().includes("xat-dm");
+  const isMAHCETMock = resolvedParams.mockId.toLowerCase().includes("mah-cet") || resolvedParams.mockId.toLowerCase().includes("mahcet");
+  const isMAHCETARSectional = resolvedParams.mockId.toLowerCase().includes("mah-cet-ar");
+  const isSNAPMock = resolvedParams.mockId.toLowerCase().includes("snap");
+  const isSNAPEthicsSectional = resolvedParams.mockId.toLowerCase().includes("snap-ethics");
 
   // Mock Sections Configuration
-  const sections = isXATDMSectional
+  const sections = isSNAPEthicsSectional
+    ? [{ id: "ethics", name: "Ethics, Morality & Values", durationSec: 900, questionCount: 15 }]
+    : isSNAPMock
+    ? [
+        { id: "english", name: "General English", durationSec: 900, questionCount: 15 },
+        { id: "alr", name: "Analytical & Logical Reasoning", durationSec: 1500, questionCount: 25 },
+        { id: "qadi", name: "Quant, DI & DS", durationSec: 1200, questionCount: 20 },
+      ]
+    : isMAHCETARSectional
+    ? [{ id: "ar", name: "Abstract Reasoning", durationSec: 1200, questionCount: 25 }]
+    : isMAHCETMock
+    ? [
+        { id: "lr", name: "Logical Reasoning", durationSec: 3375, questionCount: 75 },
+        { id: "ar", name: "Abstract Reasoning", durationSec: 1125, questionCount: 25 },
+        { id: "qa", name: "Quantitative Aptitude", durationSec: 2250, questionCount: 50 },
+        { id: "varc", name: "Verbal Ability & RC", durationSec: 2250, questionCount: 50 },
+      ]
+    : isXATDMSectional
     ? [{ id: "dm", name: "Decision Making", durationSec: 2400, questionCount: 22 }]
     : isXATMock
     ? [
@@ -74,14 +105,19 @@ export default function MockAttemptSimulatorPage({
   // Load questions by section with STRICT EXAM ISOLATION
   const allQuestions = getAllQuestionBank();
 
-  // For non-XAT (e.g. CAT), ensure DM and GK NEVER appear
+  // For non-XAT, non-SNAP, non-MAH CET (e.g. CAT), ensure DM, GK, AR, and SNAP Ethics NEVER appear
   const nonXATPool = allQuestions.filter(
     (q) =>
       !q.id.startsWith("xat-") &&
+      !q.id.startsWith("mah-") &&
+      !q.id.startsWith("snap-") &&
       !q.topicSlug.includes("dm") &&
       !q.topicSlug.includes("decision-making") &&
       !q.topicSlug.includes("gk") &&
-      !q.topicSlug.includes("general-knowledge")
+      !q.topicSlug.includes("general-knowledge") &&
+      !q.topicSlug.includes("abstract") &&
+      !q.topicSlug.includes("ethics") &&
+      !q.topicSlug.includes("morality")
   );
 
   const varcQuestions = nonXATPool.filter(
@@ -229,9 +265,54 @@ export default function MockAttemptSimulatorPage({
     },
   ];
 
+  // SNAP Question Pools
+  const mapSNAPQuestionToMock = (q: any) => ({
+    id: q.id,
+    topicSlug: q.topic.toLowerCase().replace(/[^a-z0-9]/g, "-"),
+    subtopicSlug: q.subtopic?.toLowerCase().replace(/[^a-z0-9]/g, "-") || "general",
+    difficulty: q.difficulty === "FOUNDATION" ? "EASY" : q.difficulty === "SNAP_ADVANCED" ? "HARD" : "MEDIUM",
+    questionType: "MCQ" as const,
+    isDemo: false,
+    passageText: q.passageText || q.scenarioText,
+    questionText: q.question,
+    options: q.options,
+    correctAnswer: q.correctAnswer,
+    estimatedTimeSec: q.estimatedTimeSec || 60,
+    source: "SNAP 2026 Question Bank",
+    solution: {
+      detailedText: q.explanation,
+      stepByStep: [q.explanation],
+      shortcutMethod: q.tags?.join(", ") || "SNAP Speed Method",
+      conceptTested: q.topic,
+      commonMistakeTrap: q.commonTrap || "Careless reading or timing trap",
+    },
+  });
+
+  const snapVerbalQuestions = SNAP_QUESTION_BANK.filter(q => q.section === "General English").map(mapSNAPQuestionToMock);
+  const snapLRQuestions = SNAP_QUESTION_BANK.filter(q => q.section === "Analytical & Logical Reasoning").map(mapSNAPQuestionToMock);
+  const snapQuantDIQuestions = SNAP_QUESTION_BANK.filter(q => q.section === "Quantitative, Data Interpretation & Data Sufficiency").map(mapSNAPQuestionToMock);
+  const snapEthicsQuestions = SNAP_QUESTION_BANK.filter(q => q.section === "Ethics, Morality & Values").map(mapSNAPQuestionToMock);
+
   // Configure sectionPools dynamically based on mock exam
   let sectionPools: any[] = [];
-  if (isXATDMSectional) {
+  if (isSNAPEthicsSectional) {
+    sectionPools = [snapEthicsQuestions];
+  } else if (isSNAPMock) {
+    sectionPools = [
+      snapVerbalQuestions.length > 0 ? snapVerbalQuestions : nonXATPool,
+      snapLRQuestions.length > 0 ? snapLRQuestions : nonXATPool,
+      snapQuantDIQuestions.length > 0 ? snapQuantDIQuestions : nonXATPool,
+    ];
+  } else if (isMAHCETARSectional) {
+    sectionPools = [ALL_MAH_CET_AR_QUESTIONS];
+  } else if (isMAHCETMock) {
+    sectionPools = [
+      dilrQuestions.length > 0 ? dilrQuestions : nonXATPool, // LR (75Q)
+      ALL_MAH_CET_AR_QUESTIONS,                             // Abstract Reasoning (25Q)
+      qaQuestions.length > 0 ? qaQuestions : nonXATPool,     // QA (50Q)
+      varcQuestions.length > 0 ? varcQuestions : nonXATPool, // VARC (50Q)
+    ];
+  } else if (isXATDMSectional) {
     sectionPools = [xatDMQuestions];
   } else if (isXATMock) {
     sectionPools = [
@@ -241,7 +322,7 @@ export default function MockAttemptSimulatorPage({
       xatGKQuestions,
     ];
   } else {
-    // Non-XAT (e.g. CAT Mock): STRICTLY NO DM, STRICTLY NO GK
+    // Non-XAT, Non-MAH CET, Non-SNAP (e.g. CAT Mock): STRICTLY NO DM, NO GK, NO AR, NO SNAP Ethics
     sectionPools = [
       varcQuestions.length > 0 ? varcQuestions : nonXATPool,
       dilrQuestions.length > 0 ? dilrQuestions : nonXATPool,
@@ -485,37 +566,101 @@ export default function MockAttemptSimulatorPage({
           {/* Question & Options */}
           <div className="p-6 rounded-2xl bg-[#0e1422] border border-slate-800 space-y-6">
             <p className="text-sm sm:text-base font-medium text-white leading-relaxed">
-              {currentQ.questionText}
+              {currentQ.questionText || (currentQ as any).prompt || (currentQ as any).question}
             </p>
 
+            {/* Visual Abstract Reasoning Question Renderers */}
+            {(currentQ as any).questionType === "FIGURE_SERIES" && (currentQ as any).sequenceFigures && (
+              <div className="flex justify-center p-4 bg-slate-950/80 rounded-2xl border border-slate-800">
+                <FigureSequence figures={(currentQ as any).sequenceFigures} figureSize={85} />
+              </div>
+            )}
+            {(currentQ as any).questionType === "FIGURE_ANALOGY" && (currentQ as any).pairA && (
+              <div className="flex justify-center p-4 bg-slate-950/80 rounded-2xl border border-slate-800">
+                <FigureAnalogy
+                  pairA={(currentQ as any).pairA}
+                  figureC={(currentQ as any).figureC}
+                  figureSize={90}
+                />
+              </div>
+            )}
+            {(currentQ as any).questionType === "MISSING_FIGURE" && (currentQ as any).matrix3x3 && (
+              <div className="flex justify-center p-4 bg-slate-950/80 rounded-2xl border border-slate-800">
+                <FigureMatrix matrix={(currentQ as any).matrix3x3} figureSize={75} />
+              </div>
+            )}
+            {(currentQ as any).questionType === "FIGURE_CLASSIFICATION" && (currentQ as any).classificationFigures && (
+              <div className="flex flex-wrap items-center justify-center gap-3 p-4 bg-slate-950/80 rounded-2xl border border-slate-800">
+                {(currentQ as any).classificationFigures.map((cf: any) => (
+                  <div key={cf.label} className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-center">
+                    <FigureRenderer figure={cf.figure} size={75} />
+                    <span className="text-xs font-bold text-slate-400 block mt-1">Figure {cf.label}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+            {(currentQ as any).questionType === "ROTATION_REFLECTION" && (currentQ as any).sourceFigure && (
+              <div className="flex justify-center p-4 bg-slate-950/80 rounded-2xl border border-slate-800">
+                <FigureRenderer figure={(currentQ as any).sourceFigure} size={95} />
+              </div>
+            )}
+            {(currentQ as any).questionType === "MATCHING_PAIRS" && (currentQ as any).referencePair && (
+              <div className="flex items-center justify-center gap-3 p-4 bg-slate-950/80 rounded-2xl border border-slate-800">
+                <FigureRenderer figure={(currentQ as any).referencePair[0]} size={80} />
+                <ArrowRight className="w-5 h-5 text-amber-400" />
+                <FigureRenderer figure={(currentQ as any).referencePair[1]} size={80} />
+              </div>
+            )}
+
             {currentQ.options && currentQ.options.length > 0 ? (
-              <div className="space-y-3">
-                {currentQ.options.map((opt: { label: string; text: string }) => {
-                  const isSelected = currentState.selectedOption === opt.label;
-                  return (
-                    <div
-                      key={opt.label}
-                      onClick={() => handleSelectOption(opt.label)}
-                      className={`p-4 rounded-xl border text-sm flex items-start gap-3.5 transition-all cursor-pointer ${
-                        isSelected
-                          ? "bg-indigo-950/40 border-indigo-500 text-white"
-                          : "bg-slate-900/60 border-slate-800 text-slate-300 hover:border-slate-700"
-                      }`}
-                    >
+              (currentQ.options[0] as any).figure ? (
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                  {currentQ.options.map((opt: any) => {
+                    const isSelected = currentState.selectedOption === opt.label;
+                    return (
+                      <OptionFigure
+                        key={opt.label}
+                        label={opt.label}
+                        figure={opt.figure}
+                        figurePair={opt.figurePair}
+                        isSelected={isSelected}
+                        isRevealed={false}
+                        isCorrect={false}
+                        onClick={() => handleSelectOption(opt.label)}
+                        figureSize={75}
+                      />
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {currentQ.options.map((opt: { label: string; text: string }) => {
+                    const isSelected = currentState.selectedOption === opt.label;
+                    return (
                       <div
-                        className={`h-6 w-6 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${
+                        key={opt.label}
+                        onClick={() => handleSelectOption(opt.label)}
+                        className={`p-4 rounded-xl border text-sm flex items-start gap-3.5 transition-all cursor-pointer ${
                           isSelected
-                            ? "bg-indigo-600 text-white"
-                            : "bg-slate-800 text-slate-400 border border-slate-700"
+                            ? "bg-indigo-950/40 border-indigo-500 text-white"
+                            : "bg-slate-900/60 border-slate-800 text-slate-300 hover:border-slate-700"
                         }`}
                       >
-                        {opt.label}
+                        <div
+                          className={`h-6 w-6 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${
+                            isSelected
+                              ? "bg-indigo-600 text-white"
+                              : "bg-slate-800 text-slate-400 border border-slate-700"
+                          }`}
+                        >
+                          {opt.label}
+                        </div>
+                        <span className="text-xs sm:text-sm pt-0.5">{opt.text}</span>
                       </div>
-                      <span className="text-xs sm:text-sm pt-0.5">{opt.text}</span>
-                    </div>
-                  );
-                })}
-              </div>
+                    );
+                  })}
+                </div>
+              )
             ) : (
               <div className="p-5 rounded-xl bg-slate-900/80 border border-indigo-500/30 space-y-3">
                 <label className="text-xs font-semibold text-indigo-300 block uppercase tracking-wider">

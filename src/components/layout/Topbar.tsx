@@ -70,9 +70,13 @@ export function Topbar({ onMobileMenuToggle, isMobileMenuOpen }: TopbarProps) {
         .toUpperCase()
     : "ST";
 
-  // Exam-Aware Search Filtering (Requirements 18, TEST 12, TEST 13)
-  // Inside CAT, NMAT, SNAP, CET: strictly NEVER return XAT DM or XAT GK
+  // Exam-Aware Search Filtering
+  // 1. Inside CAT, NMAT, SNAP, CET: strictly NEVER return XAT DM or XAT GK
+  // 2. Inside CAT, XAT, NMAT, SNAP: strictly NEVER return MAH CET Abstract Reasoning
+  // 3. Inside CAT, XAT, NMAT, CET: strictly NEVER return SNAP-exclusive items
   const isXATContext = targetExamSlug.toLowerCase() === "xat";
+  const isMAHCETContext = targetExamSlug.toLowerCase() === "mah-cet" || targetExamSlug.toLowerCase() === "mahcet";
+  const isSNAPContext = targetExamSlug.toLowerCase() === "snap";
 
   const masterSearchPool = [
     { title: "Time, Speed & Distance - Relative Speed", type: "Concept", href: "/learn/quant/time-speed-distance", exam: "ALL" },
@@ -82,12 +86,27 @@ export function Topbar({ onMobileMenuToggle, isMobileMenuOpen }: TopbarProps) {
     { title: "XAT Decision Making Ethical Dilemmas", type: "XAT Studio", href: "/exams/xat/dm", exam: "xat" },
     { title: "XAT General Knowledge (Static GK & Current Affairs)", type: "XAT Studio", href: "/exams/xat/gk", exam: "xat" },
     { title: "XAT 2026 Comprehensive Simulator #01", type: "Mock Test", href: "/mocks/xat-2026-comprehensive-simulator-01", exam: "xat" },
+    { title: "MAH CET Abstract Reasoning - Visual Series & Patterns", type: "MAH CET Studio", href: "/exams/mah-cet/ar", exam: "mah-cet" },
+    { title: "MAH CET Figure Analogies & Missing Figure Matrix", type: "MAH CET Studio", href: "/exams/mah-cet/ar", exam: "mah-cet" },
+    { title: "MAH CET 2026 Full Length Mock #01", type: "Mock Test", href: "/mocks/mah-cet-2026-full-length-mock-01", exam: "mah-cet" },
+    { title: "SNAP Ethics, Morality & Values Studio", type: "SNAP Studio", href: "/exams/snap/studio", exam: "snap" },
+    { title: "SNAP 2026 60-Minute Speed Sprint Mock #01", type: "Mock Test", href: "/mocks/snap-2026-sprint-mock-01", exam: "snap" },
+    { title: "SNAP Reading Comprehension & Verbal Ability", type: "SNAP Concept", href: "/exams/snap/studio", exam: "snap" },
+    { title: "SNAP Analytical & Logical Reasoning Speed Matrix", type: "SNAP Concept", href: "/exams/snap/studio", exam: "snap" },
   ];
 
   const searchResults = masterSearchPool
     .filter((item) => {
       // If user is inside non-XAT (e.g. CAT, NMAT, SNAP, CET), strictly exclude XAT DM and XAT GK
       if (!isXATContext && item.exam === "xat") {
+        return false;
+      }
+      // If user is inside non-MAH CET (e.g. CAT, XAT, NMAT, SNAP), strictly exclude MAH CET Abstract Reasoning
+      if (!isMAHCETContext && item.exam === "mah-cet") {
+        return false;
+      }
+      // If user is inside non-SNAP (e.g. CAT, XAT, NMAT, CET), strictly exclude SNAP-exclusive items
+      if (!isSNAPContext && item.exam === "snap") {
         return false;
       }
       return true;
