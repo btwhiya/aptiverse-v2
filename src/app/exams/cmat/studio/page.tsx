@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { Suspense, useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import {
@@ -48,7 +48,7 @@ import {
   CMATCurrentAffairsArticle,
 } from "@/lib/cmat";
 
-export default function CMATStudioPage() {
+function CMATStudioContent() {
   const searchParams = useSearchParams();
   const rawTab = searchParams.get("tab") || "concepts";
 
@@ -995,5 +995,13 @@ export default function CMATStudioPage() {
         )}
       </div>
     </AppShell>
+  );
+}
+
+export default function CMATStudioPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-slate-950" />}>
+      <CMATStudioContent />
+    </Suspense>
   );
 }

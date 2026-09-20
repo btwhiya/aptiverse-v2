@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { Suspense, useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import {
@@ -50,7 +50,7 @@ import {
   SNAPProgressMetrics,
 } from "@/lib/snap";
 
-export default function SNAPStudioPage() {
+function SNAPStudioContent() {
   const searchParams = useSearchParams();
   const initialTab = searchParams.get("tab") || "concepts";
 
@@ -877,5 +877,12 @@ export default function SNAPStudioPage() {
         </div>
       </div>
     </AppShell>
+  );
+}
+export default function SNAPStudioPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-slate-950" />}>
+      <SNAPStudioContent />
+    </Suspense>
   );
 }
