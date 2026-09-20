@@ -334,7 +334,7 @@ export default function DILRSetRunnerPage({
 
                 {/* Visual Chart / Table / Diagram */}
                 <DIVisualizationRenderer
-                  type={set.visualizationType}
+                  type={set.visualizationType || "none"}
                   data={set.visualizationData}
                 />
               </div>
@@ -413,7 +413,7 @@ export default function DILRSetRunnerPage({
               {/* Options or TITA Input */}
               {currentQ.questionType === "MCQ" ? (
                 <div className="space-y-2.5">
-                  {currentQ.options.map((opt) => {
+                  {(currentQ.options || []).map((opt) => {
                     const isSelected = currentResp?.answer === opt.label;
                     const isChecked = currentResp?.isChecked;
                     const isCorrectOpt = opt.label === currentQ.correctAnswer;

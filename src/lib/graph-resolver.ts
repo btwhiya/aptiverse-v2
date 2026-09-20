@@ -152,6 +152,7 @@ export function resolveQuestionGraph(question: {
 
   const text = `${question.passageText || ""} ${question.questionText || ""}`.trim();
   const slug = (question.topicSlug || "").toLowerCase();
+  const qId = (question.id || "").toLowerCase();
   // ==========================================
   // TOPIC 2: MIXED GRAPHS (mixed-graphs)
   // Must be checked BEFORE graphs-charts because mixed-graph questions

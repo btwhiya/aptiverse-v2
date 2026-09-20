@@ -22,12 +22,18 @@
 - **Dynamic Option Randomization:** Cryptographically shuffled MCQ choices and dynamic distractor generation to prevent memorization and ensure true mastery.
 - **Concept & Formula Sheets:** Curated canonical notes with quick revision summaries, standard shortcuts, and typical question traps.
 
-### 3. 🎯 Multi-Exam Switcher & Adaptive Practice
+### 3. 📖 Verbal Ability & Reading Comprehension (VARC) Studio
+- **Dual-Column Reading Studio:** 10 authentic academic passages across Philosophy, Cognitive Science, Digital Economics, and Cultural History with adjustable font sizing, paragraph markers, and pacing telemetry.
+- **4-Part Deductive Explanations:** Comprehensive rationale breakdown for every question, covering the correct textual anchor, distractor elimination analysis, CAT strategy tips, and common cognitive traps.
+- **Verbal Ability Engines:** Dedicated practice suites for Para-Jumbles (with TITA keypad sequencing), Paragraph Summaries, Odd-Sentence-Out, and Sentence Completion.
+- **12 Pedagogical Concept Guides:** In-depth masterclasses spanning Central Thesis, Critical Inference, Tone & Attitude Spectrum, and Structural Rhetoric with interactive worked examples.
+
+### 4. 🎯 Multi-Exam Switcher & Adaptive Practice
 - Seamless switching between target exams (**CAT, XAT, GMAT, GRE, GATE, Banking, Placements**).
 - Adaptive question filtering based on target exam weightage and syllabus alignment.
 - Custom practice sessions, timed mock tests, previous year papers, and speed-drill modes.
 
-### 4. 📈 Performance Analytics & Mistake Notebook
+### 5. 📈 Performance Analytics & Mistake Notebook
 - **Mistake Notebook:** Automatic tracking of incorrect attempts with diagnostic categorization (conceptual error, calculation mistake, time pressure).
 - **Speed & Accuracy Analytics:** Detailed sectional velocity breakdown and percentile projections.
 - **Gamified Progress:** Streak trackers, milestones, and achievements to sustain preparation consistency.
@@ -57,7 +63,9 @@ AptiVerse/
 │   ├── app/              # Next.js App Router pages & layouts
 │   │   ├── analytics/    # Speed, accuracy, and section performance breakdown
 │   │   ├── exams/        # Target exam hub and syllabus viewers
-│   │   ├── learn/        # Canonical concept graphs & DILR learning hub
+│   │   ├── learn/        # Canonical concept graphs, DILR & VARC learning hub
+│   │   │   ├── dilr/     # Interactive DILR set runner & solvers
+│   │   │   └── varc/     # RC dual-column reading studio & VA drills
 │   │   ├── mocks/        # Full-length exam simulation interface
 │   │   ├── practice/     # Topic-wise practice runners and question generation
 │   │   └── quiz/         # Rapid assessment & quiz results
@@ -68,6 +76,7 @@ AptiVerse/
 │   └── lib/              # Core business logic & mathematical generators
 │       ├── dilr/         # DILR generators, constraints solver, and registry
 │       ├── quant/        # Quant problem engines (Algebra, Arithmetic, Geometry, etc.)
+│       ├── varc/         # VARC passages, VA question bank, validator & adapter
 │       └── question-engine.ts # Question shuffler and procedural test engine
 └── package.json
 ```

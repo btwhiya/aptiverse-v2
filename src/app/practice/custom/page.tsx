@@ -33,10 +33,13 @@ export default function CustomQuizBuilderPage() {
       { id: "binary-logic", name: "Binary Logic & Truth Tellers" },
     ],
     varc: [
+      { id: "reading-comprehension", name: "Reading Comprehension (Multi-Genre Passages)" },
       { id: "rc-main-idea", name: "RC: Central Thesis & Main Idea" },
-      { id: "rc-inference", name: "RC: Inference & Tone Spectrum" },
-      { id: "para-jumbles", name: "Para Jumbles & Coherence" },
-      { id: "para-summary", name: "Para Summary & Odd Sentence" },
+      { id: "rc-inference", name: "RC: Critical Inferences & Tone" },
+      { id: "para-jumbles", name: "Para Jumbles (TITA & MCQ)" },
+      { id: "para-summary", name: "Para Summary & Scope Elimination" },
+      { id: "odd-one-out", name: "Odd Sentence Out" },
+      { id: "sentence-completion", name: "Sentence Completion & Coherence" },
     ],
     special: [
       { id: "xat-dm", name: "XAT Decision Making" },

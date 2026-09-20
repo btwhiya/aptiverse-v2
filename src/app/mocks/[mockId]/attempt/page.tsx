@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { SAMPLE_VERIFIED_QUESTIONS } from "@/lib/seed-data";
+import { getAllQuestionBank } from "@/lib/question-engine";
 import { formatTimeRemaining } from "@/lib/utils";
 import { QuizTimer, type QuizTimerTickData } from "@/components/quiz";
 import { QuestionGraphViewer } from "@/components/practice/QuestionGraphViewer";
@@ -59,10 +60,37 @@ export default function MockAttemptSimulatorPage({
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
 
   // Load questions by section
-  const allQuestions = SAMPLE_VERIFIED_QUESTIONS;
-  const varcQuestions = allQuestions.filter(q => q.topicSlug.includes("reading") || q.topicSlug.includes("verbal") || q.topicSlug.includes("varc"));
-  const dilrQuestions = allQuestions.filter(q => q.topicSlug.includes("logical") || q.topicSlug.includes("data") || q.topicSlug.includes("dilr"));
-  const qaQuestions = allQuestions.filter(q => q.topicSlug.includes("arithmetic") || q.topicSlug.includes("algebra") || q.topicSlug.includes("geometry") || q.topicSlug.includes("number") || q.topicSlug.includes("modern") || q.topicSlug.includes("qa"));
+  const allQuestions = getAllQuestionBank();
+  const varcQuestions = allQuestions.filter(
+    (q) =>
+      q.topicSlug.includes("reading") ||
+      q.topicSlug.includes("verbal") ||
+      q.topicSlug.includes("varc") ||
+      q.topicSlug.includes("para-") ||
+      q.topicSlug.includes("odd-one") ||
+      q.topicSlug.includes("sentence-completion")
+  );
+  const dilrQuestions = allQuestions.filter(
+    (q) =>
+      q.topicSlug.includes("logical") ||
+      q.topicSlug.includes("data") ||
+      q.topicSlug.includes("dilr") ||
+      q.topicSlug.includes("arrangements") ||
+      q.topicSlug.includes("tournaments") ||
+      q.topicSlug.includes("tables-caselets") ||
+      q.topicSlug.includes("binary-logic")
+  );
+  const qaQuestions = allQuestions.filter(
+    (q) =>
+      q.topicSlug.includes("arithmetic") ||
+      q.topicSlug.includes("algebra") ||
+      q.topicSlug.includes("geometry") ||
+      q.topicSlug.includes("number") ||
+      q.topicSlug.includes("modern") ||
+      q.topicSlug.includes("qa") ||
+      q.topicSlug.includes("time-") ||
+      q.topicSlug.includes("percentages")
+  );
 
   const sectionPools = [
     varcQuestions.length > 0 ? varcQuestions : allQuestions,

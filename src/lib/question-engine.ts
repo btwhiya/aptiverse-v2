@@ -2,6 +2,7 @@ import { ALL_QUANT_TOPICS, QuantTopicFullData, QuestionItem } from "./quant";
 import { ALL_DILR_TOPICS } from "./dilr";
 import { SAMPLE_VERIFIED_QUESTIONS, VerifiedQuestionItem } from "./seed-data";
 import { getCustomQuestions } from "./custom-questions";
+import { ALL_VARC_VERIFIED_QUESTIONS } from "./varc";
 
 // Fisher-Yates shuffle
 export function shuffleArray<T>(array: T[]): T[] {
@@ -170,6 +171,7 @@ export const DILR_QUESTIONS_BANK: VerifiedQuestionItem[] = [
 
 // VARC Question Bank
 export const VARC_QUESTIONS_BANK: VerifiedQuestionItem[] = [
+  ...ALL_VARC_VERIFIED_QUESTIONS,
   {
     id: "varc-001",
     topicSlug: "rc-main-idea",
