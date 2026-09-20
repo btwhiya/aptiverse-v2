@@ -34,6 +34,7 @@ import {
   OptionFigure,
 } from "@/lib/mah-cet";
 import { SNAP_QUESTION_BANK } from "@/lib/snap";
+import { CMAT_QUESTION_BANK } from "@/lib/cmat";
 
 type PaletteStatus =
   | "NOT_VISITED"
@@ -48,7 +49,7 @@ interface MockQuestionState {
   timeSpentSec: number;
 }
 
-export default function MockAttemptSimulatorPage({
+export default function MockAttemptPage({
   params,
 }: {
   params: Promise<{ mockId: string }>;
@@ -62,9 +63,21 @@ export default function MockAttemptSimulatorPage({
   const isMAHCETARSectional = resolvedParams.mockId.toLowerCase().includes("mah-cet-ar");
   const isSNAPMock = resolvedParams.mockId.toLowerCase().includes("snap");
   const isSNAPEthicsSectional = resolvedParams.mockId.toLowerCase().includes("snap-ethics");
+  const isCMATMock = resolvedParams.mockId.toLowerCase().includes("cmat");
+  const isCMATIESectional = resolvedParams.mockId.toLowerCase().includes("cmat-innovation");
 
   // Mock Sections Configuration
-  const sections = isSNAPEthicsSectional
+  const sections = isCMATIESectional
+    ? [{ id: "ie", name: "Innovation & Entrepreneurship", durationSec: 1800, questionCount: 20 }]
+    : isCMATMock
+    ? [
+        { id: "qt", name: "Quantitative Techniques & DI", durationSec: 2160, questionCount: 20 },
+        { id: "lr", name: "Logical Reasoning", durationSec: 2160, questionCount: 20 },
+        { id: "lang", name: "Language Comprehension", durationSec: 2160, questionCount: 20 },
+        { id: "ga", name: "General Awareness", durationSec: 2160, questionCount: 20 },
+        { id: "ie", name: "Innovation & Entrepreneurship", durationSec: 2160, questionCount: 20 },
+      ]
+    : isSNAPEthicsSectional
     ? [{ id: "ethics", name: "Ethics, Morality & Values", durationSec: 900, questionCount: 15 }]
     : isSNAPMock
     ? [
@@ -105,19 +118,22 @@ export default function MockAttemptSimulatorPage({
   // Load questions by section with STRICT EXAM ISOLATION
   const allQuestions = getAllQuestionBank();
 
-  // For non-XAT, non-SNAP, non-MAH CET (e.g. CAT), ensure DM, GK, AR, and SNAP Ethics NEVER appear
+  // For non-XAT, non-SNAP, non-MAH CET, non-CMAT (e.g. CAT), ensure exclusive modules NEVER appear
   const nonXATPool = allQuestions.filter(
     (q) =>
       !q.id.startsWith("xat-") &&
       !q.id.startsWith("mah-") &&
       !q.id.startsWith("snap-") &&
+      !q.id.startsWith("cmat-") &&
       !q.topicSlug.includes("dm") &&
       !q.topicSlug.includes("decision-making") &&
       !q.topicSlug.includes("gk") &&
       !q.topicSlug.includes("general-knowledge") &&
       !q.topicSlug.includes("abstract") &&
       !q.topicSlug.includes("ethics") &&
-      !q.topicSlug.includes("morality")
+      !q.topicSlug.includes("morality") &&
+      !q.topicSlug.includes("entrepreneurship") &&
+      !q.topicSlug.includes("innovation")
   );
 
   const varcQuestions = nonXATPool.filter(
@@ -293,9 +309,44 @@ export default function MockAttemptSimulatorPage({
   const snapQuantDIQuestions = SNAP_QUESTION_BANK.filter(q => q.section === "Quantitative, Data Interpretation & Data Sufficiency").map(mapSNAPQuestionToMock);
   const snapEthicsQuestions = SNAP_QUESTION_BANK.filter(q => q.section === "Ethics, Morality & Values").map(mapSNAPQuestionToMock);
 
+  // CMAT Question Pools
+  const mapCMATQuestionToMock = (q: any) => ({
+    id: q.id,
+    topicSlug: q.topic.toLowerCase().replace(/[^a-z0-9]/g, "-"),
+    subtopicSlug: q.subtopic?.toLowerCase().replace(/[^a-z0-9]/g, "-") || "general",
+    difficulty: q.difficulty === "HARD" ? "HARD" : q.difficulty === "EASY" ? "EASY" : "MEDIUM",
+    questionType: "MCQ" as const,
+    isDemo: false,
+    questionText: q.question,
+    options: q.options,
+    correctAnswer: q.correctAnswer,
+    estimatedTimeSec: 60,
+    source: q.source || "CMAT 2026 Question Bank",
+    solution: {
+      detailedText: q.explanation,
+      stepByStep: [q.explanation],
+      shortcutMethod: q.tags?.join(", ") || "CMAT Method",
+      conceptTested: q.topic,
+      commonMistakeTrap: "Careless reading or confusion of factual dates/terms",
+    },
+  });
+
+  const cmatGAQuestions = CMAT_QUESTION_BANK.filter(q => q.section === "General Awareness").map(mapCMATQuestionToMock);
+  const cmatIEQuestions = CMAT_QUESTION_BANK.filter(q => q.section === "Innovation & Entrepreneurship").map(mapCMATQuestionToMock);
+
   // Configure sectionPools dynamically based on mock exam
   let sectionPools: any[] = [];
-  if (isSNAPEthicsSectional) {
+  if (isCMATIESectional) {
+    sectionPools = [cmatIEQuestions];
+  } else if (isCMATMock) {
+    sectionPools = [
+      qaQuestions.length > 0 ? qaQuestions : nonXATPool,          // QT & DI
+      dilrQuestions.length > 0 ? dilrQuestions : nonXATPool,      // Logical Reasoning
+      varcQuestions.length > 0 ? varcQuestions : nonXATPool,      // Language Comprehension
+      cmatGAQuestions.length > 0 ? cmatGAQuestions : nonXATPool,  // General Awareness
+      cmatIEQuestions.length > 0 ? cmatIEQuestions : nonXATPool,  // Innovation & Entrepreneurship
+    ];
+  } else if (isSNAPEthicsSectional) {
     sectionPools = [snapEthicsQuestions];
   } else if (isSNAPMock) {
     sectionPools = [

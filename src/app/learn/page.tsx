@@ -93,7 +93,9 @@ export default function LearnIndexPage() {
       slug: "special",
       title: "Exam-Specific Specialist Modules",
       description:
-        "CMAT Innovation & Entrepreneurship, MAT Economic & Business Environment, and MICAT Divergent Thinking.",
+        user?.targetExam === "cmat"
+          ? "CMAT Innovation & Entrepreneurship, General Awareness, and Sectional Strategies."
+          : "MAT Economic & Business Environment, and MICAT Divergent Thinking.",
       icon: Sparkles,
       color: "text-purple-400 bg-purple-500/10 border-purple-500/30",
       totalTopics: 7,
@@ -101,11 +103,17 @@ export default function LearnIndexPage() {
       totalConcepts: 18,
       completedConcepts: isNewUser ? 0 : 7,
       weightage: "Exam-Specific Core Subjects",
-      subTracks: [
-        { name: "CMAT Innovation & Entrepreneurship", count: "3 Topics" },
-        { name: "MAT Economic & Business Environment", count: "2 Topics" },
-        { name: "MICAT Divergent Thinking", count: "2 Topics" },
-      ],
+      subTracks:
+        user?.targetExam === "cmat"
+          ? [
+              { name: "CMAT Innovation & Entrepreneurship", count: "3 Categories" },
+              { name: "CMAT General Awareness", count: "3 Modules" },
+              { name: "Sectional Speed & Accuracy", count: "5 Sections" },
+            ]
+          : [
+              { name: "MAT Economic & Business Environment", count: "2 Topics" },
+              { name: "MICAT Divergent Thinking", count: "2 Topics" },
+            ],
     },
   ];
 
@@ -197,7 +205,14 @@ export default function LearnIndexPage() {
                     ))}
                   </div>
 
-                  <Link href={`/learn/${track.slug}`} className="block pt-2">
+                  <Link
+                    href={
+                      track.slug === "special" && user?.targetExam === "cmat"
+                        ? "/exams/cmat/studio"
+                        : `/learn/${track.slug}`
+                    }
+                    className="block pt-2"
+                  >
                     <Button variant="default" size="sm" className="w-full justify-between group">
                       <span>Explore {track.title}</span>
                       <ChevronRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />

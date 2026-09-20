@@ -27,6 +27,11 @@ import {
   Compass,
   Shapes,
   Scale,
+  Globe,
+  Clock,
+  Landmark,
+  TrendingUp,
+  Lightbulb,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -444,6 +449,127 @@ export function Sidebar({ userRole }: { userRole?: string }) {
                 <Scale className="h-3.5 w-3.5 text-rose-400" />
                 <span>Ethics & Values</span>
               </Link>
+            </div>
+          </div>
+        )}
+
+        {/* Dynamic CMAT Exclusive Section Banner when CMAT is active */}
+        {(currentUser?.targetExam === "cmat" || pathname.startsWith("/exams/cmat")) && (
+          <div className="mx-1 my-2 p-2.5 rounded-2xl bg-gradient-to-br from-cyan-500/15 via-blue-500/5 to-slate-900 border border-cyan-500/30 space-y-1 shadow-sm">
+            <div className="flex items-center justify-between px-1">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-cyan-400">
+                CMAT Preparation
+              </span>
+              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                ACTIVE
+              </span>
+            </div>
+            <div className="space-y-0.5">
+              <Link
+                href="/exams/cmat"
+                className={cn(
+                  "flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-colors",
+                  pathname === "/exams/cmat"
+                    ? "bg-cyan-500 text-slate-950 font-bold"
+                    : "text-slate-300 hover:text-white hover:bg-slate-800/80"
+                )}
+              >
+                <Layers className="h-3.5 w-3.5 text-cyan-400" />
+                <span>CMAT Hub</span>
+              </Link>
+              <Link
+                href="/exams/cmat/studio"
+                className={cn(
+                  "flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-colors",
+                  pathname === "/exams/cmat/studio"
+                    ? "bg-cyan-500 text-slate-950 font-bold"
+                    : "text-cyan-300 hover:text-white hover:bg-cyan-500/20"
+                )}
+              >
+                <Sparkles className="h-3.5 w-3.5 text-cyan-400" />
+                <span>CMAT Concepts Studio</span>
+              </Link>
+              <Link
+                href="/exams/cmat/studio?tab=qt"
+                className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors"
+              >
+                <Target className="h-3.5 w-3.5 text-blue-400" />
+                <span>Quantitative Techniques & DI</span>
+              </Link>
+              <Link
+                href="/exams/cmat/studio?tab=lr"
+                className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors"
+              >
+                <BrainCircuit className="h-3.5 w-3.5 text-amber-400" />
+                <span>Logical Reasoning</span>
+              </Link>
+              <Link
+                href="/exams/cmat/studio?tab=lang"
+                className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white hover:bg-slate-800/80 transition-colors"
+              >
+                <BookOpen className="h-3.5 w-3.5 text-purple-400" />
+                <span>Language Comprehension</span>
+              </Link>
+
+              {/* General Awareness group */}
+              <div className="pt-1.5 pb-0.5 px-2 flex items-center gap-1.5 text-[11px] font-bold text-cyan-300">
+                <Globe className="h-3 w-3 text-cyan-400" />
+                <span>General Awareness</span>
+              </div>
+              <div className="pl-3 space-y-0.5 border-l border-cyan-500/20 ml-3">
+                <Link
+                  href="/exams/cmat/studio?tab=current-affairs"
+                  className={cn(
+                    "flex items-center gap-2 px-2 py-1 rounded-lg text-[11px] font-medium transition-colors",
+                    pathname.includes("tab=current-affairs")
+                      ? "bg-cyan-500/20 text-cyan-200 font-semibold"
+                      : "text-slate-300 hover:text-white hover:bg-slate-800/60"
+                  )}
+                >
+                  <Clock className="h-3 w-3 text-cyan-400" />
+                  <span>Current Affairs</span>
+                </Link>
+                <Link
+                  href="/exams/cmat/studio?tab=static-gk"
+                  className={cn(
+                    "flex items-center gap-2 px-2 py-1 rounded-lg text-[11px] font-medium transition-colors",
+                    pathname.includes("tab=static-gk")
+                      ? "bg-cyan-500/20 text-cyan-200 font-semibold"
+                      : "text-slate-300 hover:text-white hover:bg-slate-800/60"
+                  )}
+                >
+                  <Landmark className="h-3 w-3 text-emerald-400" />
+                  <span>Static GK</span>
+                </Link>
+                <Link
+                  href="/exams/cmat/studio?tab=economy"
+                  className={cn(
+                    "flex items-center gap-2 px-2 py-1 rounded-lg text-[11px] font-medium transition-colors",
+                    pathname.includes("tab=economy")
+                      ? "bg-cyan-500/20 text-cyan-200 font-semibold"
+                      : "text-slate-300 hover:text-white hover:bg-slate-800/60"
+                  )}
+                >
+                  <TrendingUp className="h-3 w-3 text-amber-400" />
+                  <span>Economy</span>
+                </Link>
+              </div>
+
+              {/* Innovation & Entrepreneurship */}
+              <div className="pt-1.5 pb-0.5">
+                <Link
+                  href="/exams/cmat/studio?tab=innovation"
+                  className={cn(
+                    "flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-colors",
+                    pathname.includes("tab=innovation")
+                      ? "bg-cyan-500 text-slate-950 font-bold"
+                      : "text-cyan-300 hover:text-white hover:bg-cyan-500/20"
+                  )}
+                >
+                  <Lightbulb className="h-3.5 w-3.5 text-yellow-400" />
+                  <span>Innovation & Entrepreneurship</span>
+                </Link>
+              </div>
             </div>
           </div>
         )}

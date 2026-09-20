@@ -150,6 +150,34 @@ export default function MockTestsCatalogPage() {
       desc: "15-minute speed drill testing factual reasoning and stakeholder trade-offs under SNAP pacing.",
       percentileTarget: "99.0 %ile Benchmark: ~13 Marks",
     },
+    {
+      id: "cmat-2026-national-full-mock-01",
+      title: "CMAT 2026 National Full Mock #01",
+      exam: "cmat",
+      examName: "CMAT 2026",
+      isFullMock: true,
+      durationMin: 180,
+      questions: 100,
+      marks: 400,
+      status: "LIVE",
+      sections: "Quant & DI (20Q) • LR (20Q) • Lang (20Q) • GA (20Q) • Innovation (20Q)",
+      desc: "Official 180-minute simulation with 100 questions. Strict +4 / -1 marking. Exclusive General Awareness and Innovation & Entrepreneurship sections.",
+      percentileTarget: "99.5 %ile Benchmark: ~325 Marks (JBIMS)",
+    },
+    {
+      id: "cmat-innovation-sectional-01",
+      title: "CMAT Innovation & Entrepreneurship Sectional #01",
+      exam: "cmat",
+      examName: "CMAT 2026",
+      isFullMock: false,
+      durationMin: 30,
+      questions: 20,
+      marks: 80,
+      status: "LIVE",
+      sections: "Fundamentals • Startup India / AIM • Venture Capital",
+      desc: "30-minute high-yield sectional drill dedicated exclusively to CMAT Innovation & Entrepreneurship.",
+      percentileTarget: "99.0 %ile Benchmark: ~72 Marks",
+    },
   ];
 
   const filteredMocks = mockTests.filter((mock) => {
@@ -200,6 +228,7 @@ export default function MockTestsCatalogPage() {
               { id: "all", label: "All Exams" },
               { id: "cat", label: "CAT 2026" },
               { id: "xat", label: "XAT 2026" },
+              { id: "cmat", label: "CMAT 2026" },
               { id: "mah-cet", label: "MAH CET 2026" },
               { id: "snap", label: "SNAP 2026" },
             ].map((e) => (

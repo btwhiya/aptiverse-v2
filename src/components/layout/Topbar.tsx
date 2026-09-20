@@ -77,6 +77,7 @@ export function Topbar({ onMobileMenuToggle, isMobileMenuOpen }: TopbarProps) {
   const isXATContext = targetExamSlug.toLowerCase() === "xat";
   const isMAHCETContext = targetExamSlug.toLowerCase() === "mah-cet" || targetExamSlug.toLowerCase() === "mahcet";
   const isSNAPContext = targetExamSlug.toLowerCase() === "snap";
+  const isCMATContext = targetExamSlug.toLowerCase() === "cmat";
 
   const masterSearchPool = [
     { title: "Time, Speed & Distance - Relative Speed", type: "Concept", href: "/learn/quant/time-speed-distance", exam: "ALL" },
@@ -93,6 +94,12 @@ export function Topbar({ onMobileMenuToggle, isMobileMenuOpen }: TopbarProps) {
     { title: "SNAP 2026 60-Minute Speed Sprint Mock #01", type: "Mock Test", href: "/mocks/snap-2026-sprint-mock-01", exam: "snap" },
     { title: "SNAP Reading Comprehension & Verbal Ability", type: "SNAP Concept", href: "/exams/snap/studio", exam: "snap" },
     { title: "SNAP Analytical & Logical Reasoning Speed Matrix", type: "SNAP Concept", href: "/exams/snap/studio", exam: "snap" },
+    { title: "CMAT Innovation & Entrepreneurship - Fundamentals & Terminology", type: "CMAT Concept", href: "/exams/cmat/studio?tab=innovation", exam: "cmat" },
+    { title: "CMAT Government Initiatives - Startup India & AIM", type: "CMAT Concept", href: "/exams/cmat/studio?tab=innovation", exam: "cmat" },
+    { title: "CMAT Business Acumen & Venture Capital", type: "CMAT Concept", href: "/exams/cmat/studio?tab=innovation", exam: "cmat" },
+    { title: "CMAT General Awareness - Current Affairs & Static GK", type: "CMAT Concept", href: "/exams/cmat/studio?tab=current-affairs", exam: "cmat" },
+    { title: "CMAT Economy & Banking Terminology", type: "CMAT Concept", href: "/exams/cmat/studio?tab=economy", exam: "cmat" },
+    { title: "CMAT 2026 National Full Length Mock #01", type: "Mock Test", href: "/mocks/cmat-2026-national-full-mock-01", exam: "cmat" },
   ];
 
   const searchResults = masterSearchPool
@@ -107,6 +114,10 @@ export function Topbar({ onMobileMenuToggle, isMobileMenuOpen }: TopbarProps) {
       }
       // If user is inside non-SNAP (e.g. CAT, XAT, NMAT, CET), strictly exclude SNAP-exclusive items
       if (!isSNAPContext && item.exam === "snap") {
+        return false;
+      }
+      // If user is inside non-CMAT (e.g. CAT, XAT, NMAT, SNAP, CET), strictly exclude CMAT-exclusive items
+      if (!isCMATContext && item.exam === "cmat") {
         return false;
       }
       return true;

@@ -14,6 +14,11 @@ import {
   searchSNAPAware,
   isSNAPExclusiveTopic,
 } from "@/lib/snap";
+import {
+  getCMATQuestions,
+  searchCMATAware,
+  isCMATExclusiveTopic,
+} from "@/lib/cmat";
 import { getDynamicPracticeQuestions } from "@/lib/question-engine";
 
 export async function GET(request: NextRequest) {
@@ -31,22 +36,57 @@ export async function GET(request: NextRequest) {
 
   const normExam = exam.trim().toUpperCase().replace(/[-_]/g, " ");
   const normSection = section.trim().toLowerCase();
-  const isDM = normSection.includes("decision") || normSection.includes("dm") || topic.toLowerCase().includes("dm");
-  const isGK = normSection.includes("knowledge") || normSection.includes("gk") || normSection.includes("current") || topic.toLowerCase().includes("gk");
-  const isAR = normSection.includes("abstract") || normSection.includes("ar") || topic.toLowerCase().includes("abstract");
+  const normTopic = topic.trim().toLowerCase();
+
+  const isDM = normSection.includes("decision") || normSection.includes("dm") || normTopic.includes("dm");
+  const isGK = (normSection.includes("knowledge") || normSection.includes("gk") || normSection.includes("current")) && normExam === "XAT";
+  const isXATGK = isGK;
+  const isAR = normSection.includes("abstract") || normSection.includes("ar") || normTopic.includes("abstract");
   const isEthics = isSNAPExclusiveTopic(section) || isSNAPExclusiveTopic(topic);
+  const isCMATExclusive = isCMATExclusiveTopic(section) || isCMATExclusiveTopic(topic);
+  const isCMATModule = normSection.includes("general awareness") || 
+                       normSection.includes("innovation") ||
+                       normTopic.includes("current affairs") || 
+                       normTopic.includes("static gk") || 
+                       normTopic.includes("economy");
 
   // =========================================================================
   // STRICT BACKEND SECURITY ENFORCEMENT
-  // 1. Decision Making (DM) & General Knowledge (GK) are strictly exclusive to XAT.
+  // 1. Decision Making (DM) is strictly exclusive to XAT.
   // 2. Abstract Reasoning (AR) is strictly exclusive to MAH CET.
   // 3. Ethics, Morality & Values are strictly exclusive to SNAP.
+  // 4. Innovation & Entrepreneurship is strictly exclusive to CMAT.
+  // 5. Current Affairs, Static GK, Economy belong ONLY to CMAT (and XAT GK where specified).
   // =========================================================================
-  if ((isDM || isGK) && normExam !== "XAT") {
+  if (isDM && normExam !== "XAT") {
     return NextResponse.json(
       {
         success: false,
-        error: `ACCESS DENIED: Section '${section || topic}' is strictly exclusive to XAT. Access under exam context '${exam || "UNKNOWN"}' is prohibited.`,
+        error: `ACCESS DENIED: Section 'Decision Making' is strictly exclusive to XAT. Access under exam context '${exam || "UNKNOWN"}' is prohibited.`,
+        examContext: exam,
+        questions: [],
+      },
+      { status: 403 }
+    );
+  }
+
+  if (isCMATExclusive && normExam !== "CMAT") {
+    return NextResponse.json(
+      {
+        success: false,
+        error: `ACCESS DENIED: Module '${section || topic}' is strictly exclusive to CMAT. Access under exam context '${exam || "UNKNOWN"}' is prohibited.`,
+        examContext: exam,
+        questions: [],
+      },
+      { status: 403 }
+    );
+  }
+
+  if (isCMATModule && normExam !== "CMAT" && normExam !== "XAT") {
+    return NextResponse.json(
+      {
+        success: false,
+        error: `ACCESS DENIED: Section '${section || topic}' is strictly exclusive to CMAT. Access under exam context '${exam || "UNKNOWN"}' is prohibited.`,
         examContext: exam,
         questions: [],
       },
@@ -89,12 +129,18 @@ export async function GET(request: NextRequest) {
     const mahCetResults = searchMAHCETAR(normExam, search);
     // SNAP search returns results ONLY when exam is SNAP
     const snapSearchResults = searchSNAPAware(normExam, search);
+    // CMAT search returns results ONLY when exam is CMAT
+    const cmatSearchResults = searchCMATAware(normExam, search);
 
     return NextResponse.json({
       success: true,
       examContext: normExam,
       query: search,
-      resultsCount: xatResults.length + mahCetResults.length + snapSearchResults.questions.length,
+      resultsCount:
+        xatResults.length +
+        mahCetResults.length +
+        snapSearchResults.questions.length +
+        cmatSearchResults.questions.length,
       results: [
         ...xatResults,
         ...mahCetResults,
@@ -106,7 +152,16 @@ export async function GET(request: NextRequest) {
           difficulty: q.difficulty,
           type: "SNAP Question",
           link: `/exams/snap`,
-        }))
+        })),
+        ...cmatSearchResults.questions.map(q => ({
+          id: q.id,
+          title: q.question.slice(0, 70) + "...",
+          section: q.section,
+          topic: q.topic,
+          difficulty: q.difficulty,
+          type: "CMAT Question",
+          link: `/exams/cmat/studio`,
+        })),
       ],
     });
   }
@@ -181,6 +236,23 @@ export async function GET(request: NextRequest) {
       section: section || "SNAP Preparation",
       totalQuestions: snapQuestions.length,
       data: snapQuestions,
+    });
+  }
+
+  // Handle CMAT Specific Requests
+  if (normExam === "CMAT") {
+    const cmatQuestions = getCMATQuestions({
+      exam: "CMAT",
+      topic: topic || (section && section !== "ALL" ? section : undefined),
+      difficulty: difficulty !== "ALL" ? (difficulty as any) : undefined,
+      limit: count,
+    });
+    return NextResponse.json({
+      success: true,
+      exam: "CMAT",
+      section: section || "CMAT General Awareness + Innovation",
+      totalQuestions: cmatQuestions.length,
+      data: cmatQuestions,
     });
   }
 
